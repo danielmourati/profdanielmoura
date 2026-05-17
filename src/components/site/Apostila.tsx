@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { BookOpen, CheckCircle2, ShoppingCart, Sparkles } from "lucide-react";
+import { CheckCircle2, ShoppingCart, Sparkles } from "lucide-react";
+import apostilaCover from "@/assets/apostila-cover.jpg";
 
 const benefits = [
   "Conteúdo direto ao ponto",
@@ -63,34 +64,13 @@ export function Apostila() {
           <div className="absolute -inset-10 bg-gradient-primary opacity-25 blur-3xl rounded-full" />
           <div className="relative mx-auto max-w-sm">
             <div className="bg-gradient-to-br from-card to-secondary border border-border rounded-3xl p-1 shadow-glow rotate-3">
-              <div className="rounded-[20px] overflow-hidden bg-gradient-hero aspect-[3/4] relative">
-                <div className="absolute inset-0 grid-bg opacity-50" />
-                <div className="relative h-full flex flex-col justify-between p-7">
-                  <div>
-                    <div className="text-[10px] tracking-[0.3em] text-accent font-bold uppercase">Apostila Digital</div>
-                    <div className="mt-2 size-12 rounded-xl bg-gradient-cta grid place-items-center text-accent-foreground">
-                      <BookOpen size={22} />
-                    </div>
-                    <h3 className="mt-6 text-2xl font-display font-bold leading-tight">
-                      Informática<br />para Concursos
-                    </h3>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      ACS — Prefeitura de Parnaíba <span className="text-accent">2026</span>
-                    </p>
-                  </div>
-                  <div>
-                    <div className="h-px bg-border my-4" />
-                    <div className="flex items-end justify-between">
-                      <div>
-                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Autor</div>
-                        <div className="font-semibold">Prof. Daniel Moura</div>
-                      </div>
-                      <div className="text-xs px-2.5 py-1 rounded-full bg-gold/20 text-gold border border-gold/30 font-bold">
-                        EDIÇÃO 2026
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="rounded-[20px] overflow-hidden aspect-[4/5] relative">
+                <img
+                  src={apostilaCover}
+                  alt="Capa da Apostila Digital de Informática para ACS e ACE Parnaíba 2026"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
               </div>
             </div>
           </div>
