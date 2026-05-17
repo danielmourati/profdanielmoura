@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import arms from "@/assets/daniel-arms.png";
 
 export function FinalCta() {
   return (
@@ -40,14 +39,18 @@ export function FinalCta() {
           </div>
         </motion.div>
 
-        <motion.img
-          src={arms}
-          alt="Prof. Daniel Moura"
+        <motion.video
+          src="/daniel-final.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          controls
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="hidden lg:block w-[360px] drop-shadow-2xl"
+          className="hidden lg:block w-[360px] rounded-2xl drop-shadow-2xl"
         />
       </div>
     </section>
