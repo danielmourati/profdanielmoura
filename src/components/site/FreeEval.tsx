@@ -22,7 +22,7 @@ export function FreeEval() {
         >
           <div className="absolute -inset-4 bg-gradient-cta opacity-25 blur-3xl rounded-3xl" />
           <div className="relative rounded-3xl overflow-hidden glow-ring aspect-[4/5]">
-            <img src={teaching} alt="Prof. Daniel" className="w-full h-full object-cover" />
+            <img src={teaching} alt="Prof. Daniel" className="w-full h-full object-cover object-top" />
             <div className="absolute inset-0 bg-gradient-to-tr from-background/80 via-background/30 to-transparent" />
           </div>
         </motion.div>
