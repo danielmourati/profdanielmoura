@@ -22,12 +22,9 @@ export function Apostila() {
             <Sparkles size={12} /> Lançamento ACS 2026
           </span>
           <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-            Apostila de Informática para o concurso da{" "}
-            <span className="text-gradient">Prefeitura de Parnaíba — ACS 2026</span>
+            Material objetivo, organizado e direcionado para quem deseja se preparar com foco no conteúdo de Informática cobrado no concurso de{" "}
+            <span className="text-gradient">Agente Comunitário de Saúde e Agente de Combate às Endemias da Prefeitura de Parnaíba.</span>
           </h2>
-          <p className="mt-5 text-lg text-muted-foreground">
-            Material objetivo, organizado e direcionado para quem deseja se preparar com foco no conteúdo de Informática cobrado no concurso de Agente Comunitário de Saúde da Prefeitura de Parnaíba.
-          </p>
 
           <ul className="mt-8 space-y-3">
             {benefits.map((b) => (
