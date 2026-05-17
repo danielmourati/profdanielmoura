@@ -40,7 +40,7 @@ export function Apostila() {
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
-              href="#LINK_APOSTILA_ACS_2026"
+              href="https://kiwify.app/CxPsYmi"
               className="group inline-flex items-center gap-2 bg-gradient-primary text-primary-foreground font-bold px-7 py-4 rounded-full hover:scale-105 transition-transform shadow-glow"
             >
               <ShoppingCart size={18} />
