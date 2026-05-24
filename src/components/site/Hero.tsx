@@ -17,17 +17,31 @@ export function Hero() {
           aria-hidden
           className="w-full h-full object-cover opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/40 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background/60" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-5 lg:px-8 pt-32 lg:pt-40 pb-16 grid lg:grid-cols-2 gap-8 items-end min-h-[100svh]">
+      {/* Right: Hero portrait — anchored to bottom of hero */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, delay: 0.15 }}
+        className="hidden lg:block absolute bottom-0 right-0 xl:right-8 z-10 pointer-events-none"
+      >
+        <div className="absolute -inset-10 bg-gradient-primary blur-3xl opacity-25 rounded-full" />
+        <img
+          src={hero}
+          alt="Prof. Daniel Moura"
+          className="relative w-[36rem] xl:w-[44rem] h-auto object-contain object-bottom drop-shadow-2xl block"
+        />
+      </motion.div>
+
+      <div className="relative max-w-7xl mx-auto px-5 lg:px-8 pt-32 lg:pt-40 pb-16 grid lg:grid-cols-2 gap-8 items-center min-h-[100svh]">
         {/* Left: Headline + CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="lg:pb-12"
         >
           <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.95] tracking-tight">
             Informática que <span className="text-gradient">aprova</span> em concurso.
@@ -55,18 +69,17 @@ export function Hero() {
           </div>
         </motion.div>
 
-        {/* Right: Hero portrait */}
+        {/* Mobile portrait */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="relative justify-self-center lg:justify-self-end self-end"
+          className="lg:hidden relative justify-self-center self-end"
         >
-          <div className="absolute -inset-10 bg-gradient-primary blur-3xl opacity-25 rounded-full" />
           <img
             src={hero}
             alt="Prof. Daniel Moura"
-            className="relative w-full max-w-lg lg:max-w-2xl xl:max-w-3xl h-auto object-contain drop-shadow-2xl scale-110 lg:scale-125 origin-bottom"
+            className="relative w-full max-w-md h-auto object-contain drop-shadow-2xl"
           />
         </motion.div>
       </div>
