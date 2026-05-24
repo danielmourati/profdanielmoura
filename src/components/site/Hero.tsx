@@ -66,7 +66,7 @@ export function Hero() {
           <img
             src={hero}
             alt="Prof. Daniel Moura"
-            className="relative w-full max-w-md lg:max-w-lg h-auto object-contain drop-shadow-2xl"
+            className="relative w-full max-w-lg lg:max-w-2xl xl:max-w-3xl h-auto object-contain drop-shadow-2xl scale-110 lg:scale-125 origin-bottom"
           />
         </motion.div>
       </div>
