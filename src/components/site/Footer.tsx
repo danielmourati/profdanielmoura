@@ -34,7 +34,7 @@ export function Footer() {
         <div>
           <div className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Contato</div>
           <div className="mt-4 flex flex-col gap-3 text-sm">
-            <a href="#LINK_WHATSAPP" className="inline-flex items-center gap-3 text-foreground/80 hover:text-accent transition-colors">
+            <a href="https://wa.me/5586994422827" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 text-foreground/80 hover:text-accent transition-colors">
               <MessageCircle size={18} /> WhatsApp
             </a>
             <a href="#LINK_INSTAGRAM" className="inline-flex items-center gap-3 text-foreground/80 hover:text-accent transition-colors">
@@ -57,7 +57,9 @@ export function Footer() {
 export function WhatsAppFloat() {
   return (
     <a
-      href="#LINK_WHATSAPP"
+      href="https://wa.me/5586994422827"
+      target="_blank"
+      rel="noopener noreferrer"
       aria-label="WhatsApp"
       className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-success text-background grid place-items-center shadow-glow hover:scale-110 transition-transform"
     >
