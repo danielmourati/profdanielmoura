@@ -1,97 +1,73 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import hero from "@/assets/daniel-hero.png";
+import bg from "@/assets/hero-bg.jpg";
 
 export function Hero() {
   return (
-    <section id="inicio" className="relative pt-28 lg:pt-32 pb-20 overflow-hidden bg-hero">
-      <div className="absolute inset-0 grid-bg opacity-40" />
-      <div className="absolute -top-40 -right-40 size-[500px] rounded-full bg-primary/20 blur-3xl" />
-      <div className="absolute -bottom-40 -left-40 size-[500px] rounded-full bg-accent/15 blur-3xl" />
+    <section
+      id="inicio"
+      className="relative min-h-[100svh] overflow-hidden bg-background"
+    >
+      {/* Background classroom image */}
+      <div className="absolute inset-0">
+        <img
+          src={bg}
+          alt=""
+          aria-hidden
+          className="w-full h-full object-cover opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/40 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent" />
+      </div>
 
-      <div className="relative max-w-7xl mx-auto px-5 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative max-w-7xl mx-auto px-5 lg:px-8 pt-32 lg:pt-40 pb-16 grid lg:grid-cols-2 gap-8 items-end min-h-[100svh]">
+        {/* Left: Headline + CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
+          className="lg:pb-12"
         >
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-semibold uppercase tracking-wider">
-            <Sparkles size={14} /> Preparatório para Concursos
-          </span>
-          <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05]">
-            Informática para Concursos com o{" "}
-            <span className="text-gradient">Prof. Daniel Moura</span>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.95] tracking-tight">
+            Informática que <span className="text-gradient">aprova</span> em concurso.
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-xl">
-            Mais de <strong className="text-foreground">15 anos</strong> de experiência em tecnologia e mais de{" "}
-            <strong className="text-foreground">7 anos</strong> preparando alunos para concursos públicos.
-          </p>
-          <p className="mt-3 text-base text-muted-foreground max-w-xl">
-            Centenas de alunos já foram ajudados a gabaritar Informática e conquistar a aprovação.
+          <p className="mt-6 text-lg text-muted-foreground max-w-lg">
+            Mais de 15 anos em tecnologia e 7+ anos preparando alunos para concursos públicos. Método focado, didática direta, resultados reais.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href="#produtos"
-              className="group inline-flex items-center gap-2 bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 rounded-full hover:scale-105 transition-transform shadow-glow"
+              className="group inline-flex items-center gap-3 bg-gradient-primary text-primary-foreground font-semibold pl-6 pr-2 py-2 rounded-full hover:scale-[1.02] transition-transform shadow-glow"
             >
-              Quero estudar Informática
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              <span className="text-base">Quero estudar Informática</span>
+              <span className="size-10 rounded-full bg-background/20 grid place-items-center group-hover:rotate-45 transition-transform">
+                <ArrowUpRight size={18} />
+              </span>
             </a>
             <a
               href="#avaliacao"
-              className="inline-flex items-center gap-2 bg-card border border-border text-foreground font-semibold px-6 py-3.5 rounded-full hover:border-accent hover:text-accent transition-colors"
+              className="inline-flex items-center gap-2 text-foreground font-semibold px-6 py-3.5 rounded-full border border-border hover:border-accent hover:text-accent transition-colors"
             >
-              Fazer avaliação gratuita
+              Avaliação gratuita
             </a>
-          </div>
-
-          <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-            {["Método focado", "Linguagem didática", "Resultados reais"].map((t) => (
-              <div key={t} className="flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-accent" /> {t}
-              </div>
-            ))}
           </div>
         </motion.div>
 
+        {/* Right: Hero portrait */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative"
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="relative justify-self-center lg:justify-self-end self-end"
         >
-          <div className="absolute inset-0 bg-gradient-primary blur-3xl opacity-30 rounded-full" />
-          <div className="relative rounded-3xl overflow-hidden glow-ring bg-card">
-            <img src={hero} alt="Prof. Daniel Moura" className="w-full h-auto object-cover" />
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="absolute -left-4 lg:-left-10 bottom-12 bg-card/95 backdrop-blur-xl border border-border rounded-2xl p-4 shadow-card max-w-[220px]"
-          >
-            <div className="text-3xl font-display font-bold text-gradient-cta">+700</div>
-            <div className="text-xs text-muted-foreground">alunos preparados</div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
-            className="absolute -right-2 lg:-right-6 top-16 bg-card/95 backdrop-blur-xl border border-border rounded-2xl p-4 shadow-card"
-          >
-            <div className="flex items-center gap-2">
-              <div className="size-8 rounded-full bg-gradient-gold grid place-items-center text-background font-bold text-sm">
-                ★
-              </div>
-              <div>
-                <div className="text-sm font-semibold">Aprovações</div>
-                <div className="text-xs text-muted-foreground">em todo o Brasil</div>
-              </div>
-            </div>
-          </motion.div>
+          <div className="absolute -inset-10 bg-gradient-primary blur-3xl opacity-25 rounded-full" />
+          <img
+            src={hero}
+            alt="Prof. Daniel Moura"
+            className="relative w-full max-w-md lg:max-w-lg h-auto object-contain drop-shadow-2xl"
+          />
         </motion.div>
       </div>
     </section>
