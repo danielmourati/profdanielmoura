@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import logoProf from "@/assets/logo-prof.png";
 
 const links = [
   { id: "inicio", label: "Início" },
@@ -8,6 +9,7 @@ const links = [
   { id: "apostila", label: "Apostila ACS 2026" },
   { id: "flashcards", label: "Flashcards" },
   { id: "produtos", label: "Produtos" },
+  { id: "downloads", label: "Downloads" },
   { id: "contato", label: "Contato" },
 ];
 
@@ -46,13 +48,8 @@ export function Nav() {
       }`}
     >
       <nav className="max-w-7xl mx-auto px-5 lg:px-8 h-16 lg:h-20 flex items-center justify-between">
-        <a href="#inicio" className="flex items-center gap-2 font-display font-bold text-lg">
-          <span className="size-9 rounded-xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-glow">
-            DM
-          </span>
-          <span className="hidden sm:block">
-            Prof. <span className="text-gradient">Daniel Moura</span>
-          </span>
+        <a href="#inicio" className="flex items-center gap-2 font-display font-bold text-lg" aria-label="Prof. Daniel Moura">
+          <img src={logoProf} alt="Prof. Daniel Moura" className="h-9 lg:h-10 w-auto" />
         </a>
 
         <ul className="hidden lg:flex items-center gap-1">

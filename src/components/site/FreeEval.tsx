@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ClipboardCheck, Target, TrendingUp, ArrowRight } from "lucide-react";
-import teaching from "@/assets/daniel-teaching.jpg";
+import evalTests from "@/assets/eval-tests.jpg";
 
 const benefits = [
   { icon: Target, text: "Identifique seus pontos fracos" },
@@ -22,8 +22,8 @@ export function FreeEval() {
         >
           <div className="absolute -inset-4 bg-gradient-cta opacity-25 blur-3xl rounded-3xl" />
           <div className="relative rounded-3xl overflow-hidden glow-ring aspect-[4/5]">
-            <img src={teaching} alt="Prof. Daniel" className="w-full h-full object-cover object-top" />
-            <div className="absolute inset-0 bg-gradient-to-tr from-background/80 via-background/30 to-transparent" />
+            <img src={evalTests} alt="Avaliação diagnóstica de Informática: testes, gráficos de níveis e conhecimentos" loading="lazy" width={1024} height={1280} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-background/60 via-transparent to-transparent" />
           </div>
         </motion.div>
 
