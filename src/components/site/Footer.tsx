@@ -22,6 +22,7 @@ export function Footer() {
               ["Sobre", "sobre"],
               ["Avaliação Gratuita", "avaliacao"],
               ["Produtos", "produtos"],
+              ["Downloads", "downloads"],
               ["Contato", "contato"],
             ].map(([l, id]) => (
               <li key={id}>

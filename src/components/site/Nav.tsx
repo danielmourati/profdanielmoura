@@ -9,6 +9,7 @@ const links = [
   { id: "apostila", label: "Apostila ACS 2026" },
   { id: "flashcards", label: "Flashcards" },
   { id: "produtos", label: "Produtos" },
+  { id: "downloads", label: "Downloads" },
   { id: "contato", label: "Contato" },
 ];
 
