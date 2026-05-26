@@ -7,7 +7,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-5 lg:px-8 grid md:grid-cols-3 gap-10">
         <div>
           <div className="flex items-center">
-            <img src={logoProf} alt="Prof. Daniel Moura" className="h-16 w-auto max-w-[800px]" />
+            <img src={logoProf} alt="Prof. Daniel Moura" className="h-[5.25rem] w-auto max-w-[800px]" />
           </div>
           <p className="mt-3 text-sm text-muted-foreground max-w-xs">
             Informática para Concursos Públicos. Material direto, didático e focado em aprovação.

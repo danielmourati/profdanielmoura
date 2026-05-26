@@ -47,9 +47,9 @@ export function Nav() {
         scrolled ? "bg-background/85 backdrop-blur-xl border-b border-border" : "bg-transparent"
       }`}
     >
-      <nav className="max-w-7xl mx-auto px-5 lg:px-8 h-16 lg:h-20 flex items-center justify-between">
+      <nav className="max-w-7xl mx-auto px-5 lg:h-24 lg:px-8 h-20 flex items-center justify-between">
         <a href="#inicio" className="flex items-center" aria-label="Prof. Daniel Moura">
-          <img src={logoProf} alt="Prof. Daniel Moura" className="h-12 lg:h-14 w-auto" />
+          <img src={logoProf} alt="Prof. Daniel Moura" className="h-16 lg:h-[4.5rem] w-auto" />
         </a>
 
         <ul className="hidden lg:flex items-center gap-1">
