@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Check, X, SkipForward, RotateCw, Play, Square, Timer, ArrowLeft } from "lucide-react";
+import { Brain, Check, X, SkipForward, RotateCw, Play, Square, Timer } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { AuthGate } from "@/components/site/AuthGate";
@@ -29,13 +29,13 @@ const DIFFS = [
 
 const TIME_OPTIONS = [10, 15, 20, 30, 45, 60];
 
-type Step = "diff" | "cat" | "time" | "ready" | "playing" | "done";
-
 function Page() {
-  const [step, setStep] = useState<Step>("diff");
   const [diff, setDiff] = useState<string | null>(null);
   const [catId, setCatId] = useState<string | null>(null);
+  const [catChosen, setCatChosen] = useState(false);
   const [seconds, setSeconds] = useState<number>(20);
+  const [playing, setPlaying] = useState(false);
+  const [done, setDone] = useState(false);
 
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -54,7 +54,7 @@ function Page() {
 
   const cards = useQuery({
     queryKey: ["fc_cards", diff, catId],
-    enabled: !!diff && step === "playing",
+    enabled: !!diff && catChosen && playing,
     queryFn: async () => {
       let q = supabase.from("flashcards").select("*").eq("difficulty", diff as any).order("order_index");
       if (catId) q = q.eq("category_id", catId);
@@ -66,49 +66,41 @@ function Page() {
   const list = cards.data ?? [];
   const card = useMemo(() => list[index], [list, index]);
 
-  // Timer
   useEffect(() => {
-    if (step !== "playing" || !card || flipped) return;
+    if (!playing || !card || flipped) return;
     setTimeLeft(seconds);
     timerRef.current = setInterval(() => {
       setTimeLeft((t) => {
-        if (t <= 1) {
-          clearInterval(timerRef.current!);
-          setFlipped(true);
-          return 0;
-        }
+        if (t <= 1) { clearInterval(timerRef.current!); setFlipped(true); return 0; }
         return t - 1;
       });
     }, 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [step, card?.id, flipped, seconds]);
+  }, [playing, card?.id, flipped, seconds]);
 
   const next = () => {
     setFlipped(false);
-    if (index + 1 >= list.length) {
-      setStep("done");
-    } else {
-      setTimeout(() => setIndex((i) => i + 1), 150);
-    }
+    if (index + 1 >= list.length) { setPlaying(false); setDone(true); }
+    else setTimeout(() => setIndex((i) => i + 1), 150);
   };
 
   const start = () => {
-    setIndex(0); setHits(0); setMiss(0); setFlipped(false);
-    setStep("playing");
+    setIndex(0); setHits(0); setMiss(0); setFlipped(false); setDone(false);
+    setPlaying(true);
   };
 
   const stop = () => {
     if (timerRef.current) clearInterval(timerRef.current);
-    setStep("done");
+    setPlaying(false); setDone(true);
   };
 
   const restart = () => {
-    setStep("diff"); setDiff(null); setCatId(null);
-    setIndex(0); setHits(0); setMiss(0); setFlipped(false);
+    setDiff(null); setCatId(null); setCatChosen(false);
+    setIndex(0); setHits(0); setMiss(0); setFlipped(false); setDone(false); setPlaying(false);
   };
 
-  const catName = (cats.data ?? []).find((c: any) => c.id === catId)?.name ?? "Todas as categorias";
   const diffLabel = DIFFS.find((d) => d.id === diff)?.label;
+  const canStart = !!diff && catChosen;
 
   return (
     <main className="bg-background text-foreground min-h-screen">
@@ -123,108 +115,102 @@ function Page() {
           </h1>
         </div>
 
-        {/* Stepper */}
-        {step !== "playing" && step !== "done" && (
-          <div className="mt-8 flex justify-center gap-2 text-xs uppercase tracking-widest">
-            <StepDot active={step === "diff"} done={!!diff}>1. Nível</StepDot>
-            <StepDot active={step === "cat"} done={step === "time" || step === "ready"}>2. Assunto</StepDot>
-            <StepDot active={step === "time"} done={step === "ready"}>3. Tempo</StepDot>
-            <StepDot active={step === "ready"}>4. Iniciar</StepDot>
-          </div>
-        )}
-
-        {/* Step 1: difficulty */}
-        {step === "diff" && (
-          <div className="mt-10 max-w-2xl mx-auto">
-            <h2 className="text-xl font-display font-semibold text-center mb-4">Escolha o nível</h2>
-            <div className="grid sm:grid-cols-3 gap-3">
-              {DIFFS.map((d) => (
-                <button
-                  key={d.id}
-                  onClick={() => { setDiff(d.id); setSeconds(d.seconds); setStep("cat"); }}
-                  className="bg-card border border-border hover:border-primary rounded-2xl p-6 text-center transition-all hover:shadow-glow"
-                >
-                  <div className="text-2xl font-display font-bold">{d.label}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{d.seconds}s sugeridos</div>
-                </button>
-              ))}
+        {!playing && !done && (
+          <div className="mt-10 max-w-3xl mx-auto space-y-8">
+            {/* Step 1: Level */}
+            <div>
+              <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">
+                1. Escolha o nível
+              </h2>
+              <div className="grid sm:grid-cols-3 gap-3">
+                {DIFFS.map((d) => (
+                  <button
+                    key={d.id}
+                    onClick={() => { setDiff(d.id); setSeconds(d.seconds); setCatId(null); setCatChosen(false); }}
+                    className={`rounded-2xl p-5 text-center transition-all border ${
+                      diff === d.id
+                        ? "bg-gradient-primary text-primary-foreground border-transparent shadow-glow"
+                        : "bg-card border-border hover:border-primary"
+                    }`}
+                  >
+                    <div className="text-xl font-display font-bold">{d.label}</div>
+                    <div className={`text-xs mt-1 ${diff === d.id ? "opacity-80" : "text-muted-foreground"}`}>{d.seconds}s sugeridos</div>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* Step 2: category */}
-        {step === "cat" && (
-          <div className="mt-10 max-w-3xl mx-auto">
-            <BackBtn onClick={() => setStep("diff")} />
-            <h2 className="text-xl font-display font-semibold text-center mb-4">Escolha o assunto</h2>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {/* Step 2: Category — locked until level */}
+            <div className={!diff ? "opacity-40 pointer-events-none select-none" : ""}>
+              <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">
+                2. Escolha o assunto {!diff && <span className="normal-case text-xs">(selecione o nível primeiro)</span>}
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => { setCatId(null); setCatChosen(true); }}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
+                    catChosen && catId === null ? "bg-primary text-primary-foreground border-transparent" : "bg-card border-border hover:border-primary"
+                  }`}
+                >Todas</button>
+                {(cats.data ?? []).map((c: any) => (
+                  <button
+                    key={c.id}
+                    onClick={() => { setCatId(c.id); setCatChosen(true); }}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
+                      catChosen && catId === c.id ? "bg-primary text-primary-foreground border-transparent" : "bg-card border-border hover:border-primary"
+                    }`}
+                  >{c.name}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* Step 3: Time */}
+            <div className={!canStart ? "opacity-40 pointer-events-none select-none" : ""}>
+              <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+                <Timer size={14} /> 3. Tempo por pergunta
+              </h2>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                {TIME_OPTIONS.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSeconds(s)}
+                    className={`rounded-xl p-3 font-bold border transition-all ${seconds === s ? "bg-gradient-primary text-primary-foreground border-transparent" : "bg-card border-border hover:border-primary"}`}
+                  >{s}s</button>
+                ))}
+              </div>
+            </div>
+
+            {/* Start button */}
+            <div className="text-center pt-2">
               <button
-                onClick={() => { setCatId(null); setStep("time"); }}
-                className="bg-card border border-border hover:border-primary rounded-xl p-4 text-sm font-semibold transition-all"
-              >Todas as categorias</button>
-              {(cats.data ?? []).map((c: any) => (
-                <button
-                  key={c.id}
-                  onClick={() => { setCatId(c.id); setStep("time"); }}
-                  className="bg-card border border-border hover:border-primary rounded-xl p-4 text-sm font-semibold transition-all"
-                >{c.name}</button>
-              ))}
+                onClick={start}
+                disabled={!canStart}
+                className="inline-flex items-center gap-2 bg-gradient-cta text-accent-foreground font-bold px-10 py-4 rounded-full transition-all shadow-glow disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:scale-[1.02]"
+              >
+                <Play size={18} /> Iniciar treinamento
+              </button>
+              {!canStart && (
+                <p className="text-xs text-muted-foreground mt-3">
+                  Selecione nível e assunto para liberar o início.
+                </p>
+              )}
             </div>
-          </div>
-        )}
-
-        {/* Step 3: time */}
-        {step === "time" && (
-          <div className="mt-10 max-w-2xl mx-auto">
-            <BackBtn onClick={() => setStep("cat")} />
-            <h2 className="text-xl font-display font-semibold text-center mb-4 flex items-center justify-center gap-2">
-              <Timer size={20} /> Tempo por pergunta
-            </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-              {TIME_OPTIONS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => { setSeconds(s); setStep("ready"); }}
-                  className={`rounded-xl p-4 font-bold transition-all border ${seconds === s ? "bg-gradient-primary text-primary-foreground border-transparent" : "bg-card border-border hover:border-primary"}`}
-                >{s}s</button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Step 4: ready */}
-        {step === "ready" && (
-          <div className="mt-10 max-w-xl mx-auto bg-card border border-border rounded-3xl p-8 text-center">
-            <BackBtn onClick={() => setStep("time")} />
-            <h2 className="text-2xl font-display font-bold">Tudo pronto!</h2>
-            <dl className="mt-6 grid grid-cols-3 gap-3 text-sm">
-              <div><dt className="text-muted-foreground text-xs uppercase">Nível</dt><dd className="font-bold mt-1">{diffLabel}</dd></div>
-              <div><dt className="text-muted-foreground text-xs uppercase">Assunto</dt><dd className="font-bold mt-1">{catName}</dd></div>
-              <div><dt className="text-muted-foreground text-xs uppercase">Tempo</dt><dd className="font-bold mt-1">{seconds}s</dd></div>
-            </dl>
-            <button
-              onClick={start}
-              className="mt-8 inline-flex items-center gap-2 bg-gradient-cta text-accent-foreground font-bold px-8 py-4 rounded-full hover:scale-[1.02] transition-transform shadow-glow"
-            >
-              <Play size={18} /> Iniciar treinamento
-            </button>
           </div>
         )}
 
         {/* Playing */}
-        {step === "playing" && (
+        {playing && (
           <>
             {cards.isLoading ? (
               <div className="mt-12 text-center text-muted-foreground">Carregando...</div>
             ) : list.length === 0 ? (
               <div className="mt-12 text-center">
                 <p className="text-muted-foreground">Nenhum flashcard nesse filtro.</p>
-                <button onClick={restart} className="mt-4 underline text-primary">Tentar outra combinação</button>
+                <button onClick={restart} className="mt-4 underline text-primary">Voltar</button>
               </div>
             ) : (
               <div className="mt-10 grid lg:grid-cols-[1fr_auto] gap-8 items-start">
                 <div className="relative mx-auto w-full max-w-xl">
-                  {/* Timer bar */}
                   <div className="mb-3 flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1 text-muted-foreground"><Timer size={14} /> {timeLeft}s</span>
                     <span className="text-muted-foreground">{index + 1} / {list.length}</span>
@@ -274,10 +260,7 @@ function Page() {
                     <button onClick={next} className="inline-flex items-center justify-center gap-2 bg-card border border-border text-muted-foreground font-semibold py-3 rounded-full">
                       <SkipForward size={16} /> Pular
                     </button>
-                    <button
-                      onClick={stop}
-                      className="inline-flex items-center justify-center gap-2 bg-destructive text-destructive-foreground font-semibold py-3 rounded-full"
-                    >
+                    <button onClick={stop} className="inline-flex items-center justify-center gap-2 bg-destructive text-destructive-foreground font-semibold py-3 rounded-full">
                       <Square size={16} /> Parar
                     </button>
                   </div>
@@ -298,8 +281,7 @@ function Page() {
           </>
         )}
 
-        {/* Done */}
-        {step === "done" && (
+        {done && (
           <div className="mt-10 max-w-xl mx-auto bg-card border border-border rounded-3xl p-8 text-center">
             <h2 className="text-2xl font-display font-bold">Sessão finalizada</h2>
             <div className="mt-6 grid grid-cols-2 gap-3">
@@ -323,21 +305,5 @@ function Page() {
       </section>
       <Footer />
     </main>
-  );
-}
-
-function StepDot({ active, done, children }: { active?: boolean; done?: boolean; children: React.ReactNode }) {
-  return (
-    <span className={`px-3 py-1.5 rounded-full border ${active ? "bg-primary text-primary-foreground border-transparent" : done ? "bg-success/15 text-success border-success/30" : "bg-card border-border text-muted-foreground"}`}>
-      {children}
-    </span>
-  );
-}
-
-function BackBtn({ onClick }: { onClick: () => void }) {
-  return (
-    <button onClick={onClick} className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-      <ArrowLeft size={14} /> Voltar
-    </button>
   );
 }
