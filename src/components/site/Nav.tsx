@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import logoProf from "@/assets/logo-prof.png";
+import { Logo } from "./Logo";
 
 const links = [
   { id: "inicio", label: "Início" },
@@ -48,8 +48,8 @@ export function Nav() {
       }`}
     >
       <nav className="max-w-7xl mx-auto px-5 lg:px-8 h-16 lg:h-20 flex items-center justify-between">
-        <a href="#inicio" className="flex items-center gap-2 font-display font-bold text-lg" aria-label="Prof. Daniel Moura">
-          <img src={logoProf} alt="Prof. Daniel Moura" className="h-9 lg:h-10 w-auto" />
+        <a href="#inicio" className="flex items-center" aria-label="Prof. Daniel Moura">
+          <Logo className="h-10 lg:h-12 w-auto" />
         </a>
 
         <ul className="hidden lg:flex items-center gap-1">

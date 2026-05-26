@@ -1,13 +1,13 @@
 import { Instagram, MessageCircle, Mail } from "lucide-react";
-import logoProf from "@/assets/logo-prof.png";
+import { Logo } from "./Logo";
 
 export function Footer() {
   return (
     <footer id="contato" className="border-t border-border bg-background py-14">
       <div className="max-w-7xl mx-auto px-5 lg:px-8 grid md:grid-cols-3 gap-10">
         <div>
-          <div className="flex items-center gap-2">
-            <img src={logoProf} alt="Prof. Daniel Moura" className="h-10 w-auto" />
+          <div className="flex items-center">
+            <Logo className="h-14 w-auto max-w-[800px]" />
           </div>
           <p className="mt-3 text-sm text-muted-foreground max-w-xs">
             Informática para Concursos Públicos. Material direto, didático e focado em aprovação.
