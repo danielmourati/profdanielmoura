@@ -1,35 +1,70 @@
-## Objetivo
+## Plano
 
-Restringir o acesso às áreas de **Flashcards** e **Avaliação Diagnóstica** apenas a usuários autenticados, e adicionar na seção home de Flashcards um botão "Iniciar treinamento grátis" equivalente ao da seção de diagnóstico. Após o cadastro, o usuário deve ser redirecionado de volta para a área desejada automaticamente.
+### 1. Campo WhatsApp no cadastro
+- Adicionar coluna `phone` (text, nullable) na tabela `profiles` via migration.
+- Atualizar trigger `handle_new_user` para gravar `phone` de `raw_user_meta_data->>'phone'`.
+- Em `src/routes/login.tsx`: novo input de celular/WhatsApp (apenas no modo signup), com máscara simples `(99) 99999-9999` e validação. Passar em `options.data.phone` no `signUp`.
 
-## Mudanças
+### 2. Área do usuário (`/minha-area`) expandida
+Reorganizar `src/routes/minha-area.tsx` em abas/seções:
+- **Perfil**: editar `display_name` e `phone` (update em `profiles`). Mostrar email (read-only) + botão "Alterar senha" (envia `resetPasswordForEmail`).
+- **Avaliações**: histórico de `assessment_attempts` (já existente) + gráfico de evolução.
+- **Flashcards**: nova seção mostrando sessões de flashcards realizadas.
+  - Requer nova tabela `flashcard_sessions` (user_id, category_id, level, total, correct, wrong, duration_seconds, created_at) com RLS por usuário.
+  - Salvar sessão ao final do teste em `src/routes/flashcards.tsx` (insert quando user logado).
 
-### 1. Seção Flashcards na home (`src/components/site/Flashcards.tsx`)
-- Adicionar um CTA destacado "Iniciar treinamento grátis" abaixo do título, no mesmo estilo visual do botão da seção de diagnóstico (`FreeEval.tsx`).
-- O botão usa `<Link to="/flashcards">` do TanStack Router.
+### 3. Admin → Usuários (`/admin/users`)
+- Nova rota `src/routes/admin.users.tsx` ligada ao menu lateral em `src/routes/admin.tsx`.
+- Listagem de usuários consultando `profiles` + `user_roles` (join) + status de bloqueio.
+- Server functions (`createServerFn` + `supabaseAdmin` + middleware admin) para operações privilegiadas:
+  - `listUsers` — combina `profiles`, `auth.admin.listUsers()` (para email/banned_until/last_sign_in) e `user_roles`.
+  - `resetUserPassword({userId})` — usa `supabaseAdmin.auth.admin.generateLink({type:'recovery'})` e envia por email (ou retorna link).
+  - `toggleUserBlock({userId, block})` — `supabaseAdmin.auth.admin.updateUserById(userId, { ban_duration: block ? '876000h' : 'none' })`.
+  - `deleteUser({userId})` — `supabaseAdmin.auth.admin.deleteUser(userId)` (cascata remove profile/roles via FK ON DELETE).
+- Middleware `requireAdmin` que estende `requireSupabaseAuth` e verifica `has_role(userId,'admin')`.
+- UI da tabela com colunas: Nome, Email, WhatsApp, Papel, Status, Último acesso, Ações (Reset senha / Bloquear-Desbloquear / Excluir com confirmação).
 
-### 2. Guarda de autenticação nas rotas protegidas
-Aplicar verificação de login (em `component`, lendo `useAuth()`) nas rotas:
-- `src/routes/flashcards.tsx`
-- `src/routes/avaliacao.index.tsx`
-- `src/routes/avaliacao.$slug.tsx`
+### 4. Banco de dados (migrations)
+```sql
+-- 1. Phone em profiles
+ALTER TABLE public.profiles ADD COLUMN phone text;
 
-Quando `!loading && !user`, renderizar um bloco "Acesso exclusivo para alunos cadastrados" com botões **Entrar** e **Criar conta grátis** apontando para `/login?redirect=<rota-atual>`.
+-- 2. Atualizar handle_new_user para incluir phone
+-- (recriar função)
 
-### 3. Redirect-back no login (`src/routes/login.tsx`)
-- Ler `?redirect=` da URL (via `useSearch` ou `window.location`).
-- Após login OU cadastro bem-sucedido, navegar para o `redirect` (se existir), senão para `/`.
-- Isso garante que, ao concluir o cadastro vindo de `/flashcards` ou `/avaliacao`, o usuário cai direto na área desejada.
+-- 3. Tabela flashcard_sessions
+CREATE TABLE public.flashcard_sessions (
+  id uuid PK default gen_random_uuid(),
+  user_id uuid not null,
+  category_id uuid,
+  category_name text,
+  level text,
+  total int not null,
+  correct int not null,
+  wrong int not null,
+  duration_seconds int,
+  created_at timestamptz default now()
+);
+GRANT SELECT, INSERT ON public.flashcard_sessions TO authenticated;
+GRANT ALL ON public.flashcard_sessions TO service_role;
+ALTER TABLE ... ENABLE ROW LEVEL SECURITY;
+-- Policies: user vê/insere os próprios; admin vê todos.
 
-### 4. (Opcional, recomendado) Auto-confirm de email
-Para que o cadastro permita uso imediato sem precisar confirmar email, habilitar `auto_confirm_email` via `configure_auth`. Sem isso, o usuário precisa clicar no link do email antes de logar.
+-- 4. FKs com ON DELETE CASCADE em profiles.id → auth.users(id) e user_roles.user_id → auth.users(id) (se ainda não existir) para que delete user remova dados.
+```
 
-## Detalhes técnicos
+### 5. Arquivos a criar/alterar
+- **migration** (campos profiles + tabela flashcard_sessions + trigger).
+- `src/routes/login.tsx` — input phone.
+- `src/routes/minha-area.tsx` — abas Perfil / Avaliações / Flashcards.
+- `src/routes/flashcards.tsx` — gravar sessão ao final.
+- `src/lib/admin-users.functions.ts` — server fns admin.
+- `src/routes/admin.users.tsx` — UI de gestão.
+- `src/routes/admin.tsx` — adicionar item "Usuários" no menu.
 
-- Usar o `useAuth()` existente em `src/lib/auth-context.tsx` (já fornece `user` e `loading`).
-- Os CTAs de login preservam a rota de origem via query param `redirect`, padrão recomendado pelo TanStack Router.
-- Nenhuma alteração de schema/RLS é necessária — as tabelas já permitem leitura pública; o gating é apenas de UX no frontend.
+### Perguntas antes de implementar
+1. **Bloqueio**: usar "ban" do Supabase (sem login até desbloqueio) ou apenas flag visual? → Plano usa ban nativo.
+2. **Reset de senha** pelo admin: enviar email automaticamente ao usuário, ou copiar link para o admin compartilhar? → Plano sugere envio por email (`resetPasswordForEmail`).
+3. **WhatsApp obrigatório** no signup, ou opcional? → Plano sugere opcional.
 
-## Pergunta
-
-Devo habilitar **auto-confirm de email** (usuário acessa imediatamente após cadastro, sem clicar link no email)? Sem isso, o fluxo "concluir cadastro e iniciar imediatamente" exige que o usuário verifique o email primeiro.
+Se concordar com essas decisões, posso seguir para implementação.

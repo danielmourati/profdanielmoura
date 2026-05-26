@@ -201,6 +201,45 @@ export type Database = {
         }
         Relationships: []
       }
+      flashcard_sessions: {
+        Row: {
+          category_id: string | null
+          category_name: string | null
+          correct: number
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          level: string | null
+          total: number
+          user_id: string
+          wrong: number
+        }
+        Insert: {
+          category_id?: string | null
+          category_name?: string | null
+          correct: number
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          level?: string | null
+          total: number
+          user_id: string
+          wrong: number
+        }
+        Update: {
+          category_id?: string | null
+          category_name?: string | null
+          correct?: number
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          level?: string | null
+          total?: number
+          user_id?: string
+          wrong?: number
+        }
+        Relationships: []
+      }
       flashcards: {
         Row: {
           answer: string
@@ -295,18 +334,21 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          phone: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           display_name?: string | null
           id: string
+          phone?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           display_name?: string | null
           id?: string
+          phone?: string | null
           updated_at?: string
         }
         Relationships: []
