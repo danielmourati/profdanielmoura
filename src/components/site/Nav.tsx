@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import logoProf from "@/assets/logo-prof.png";
+import { useAuth } from "@/lib/auth-context";
 
 const links = [
-  { id: "inicio", label: "Início" },
-  { id: "sobre", label: "Sobre" },
-  { id: "avaliacao", label: "Avaliação Gratuita" },
-  { id: "apostila", label: "Apostila ACS 2026" },
-  { id: "flashcards", label: "Flashcards" },
-  { id: "produtos", label: "Produtos" },
-  { id: "downloads", label: "Downloads" },
-  { id: "contato", label: "Contato" },
+  { id: "inicio", label: "Início", href: "/#inicio" },
+  { id: "sobre", label: "Sobre", href: "/#sobre" },
+  { id: "avaliacao", label: "Avaliação", href: "/avaliacao" },
+  { id: "flashcards", label: "Flashcards", href: "/flashcards" },
+  { id: "produtos", label: "Produtos", href: "/#produtos" },
+  { id: "downloads", label: "Downloads", href: "/downloads" },
+  { id: "contato", label: "Contato", href: "/#contato" },
 ];
 
 export function Nav() {
