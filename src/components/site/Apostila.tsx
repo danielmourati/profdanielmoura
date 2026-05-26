@@ -14,7 +14,7 @@ export function Apostila() {
     <section id="apostila" className="relative py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-5 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Mockup da apostila — sem card */}
+          {/* Mockup da apostila — livre, sem card */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -25,7 +25,8 @@ export function Apostila() {
             <img
               src={apostilaCover}
               alt="Mockup da apostila de Informática para o concurso ACS 2026"
-              className="w-full max-w-md lg:max-w-lg rounded-2xl shadow-2xl"
+              className="w-full max-w-xl lg:max-w-2xl xl:max-w-3xl"
+              style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.55))" }}
             />
           </motion.div>
 
