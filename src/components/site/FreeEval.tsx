@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ClipboardCheck, Target, TrendingUp, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import floatQuiz from "@/assets/float-quiz.png";
 import floatChart from "@/assets/float-chart.png";
 import floatProgress from "@/assets/float-progress.png";
