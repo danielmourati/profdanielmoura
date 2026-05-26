@@ -17,29 +17,13 @@ const links = [
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState("inicio");
+  const { user, isAdmin, signOut } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
-        });
-      },
-      { rootMargin: "-40% 0px -55% 0px" }
-    );
-    links.forEach((l) => {
-      const el = document.getElementById(l.id);
-      if (el) obs.observe(el);
-    });
-    return () => obs.disconnect();
   }, []);
 
   return (
@@ -49,20 +33,16 @@ export function Nav() {
       }`}
     >
       <nav className="max-w-7xl mx-auto px-5 lg:h-24 lg:px-8 h-20 flex items-center justify-between">
-        <a href="#inicio" className="flex items-center" aria-label="Prof. Daniel Moura">
+        <Link to="/" className="flex items-center" aria-label="Prof. Daniel Moura">
           <img src={logoProf} alt="Prof. Daniel Moura" className="h-16 lg:h-[4.5rem] w-auto" />
-        </a>
+        </Link>
 
         <ul className="hidden lg:flex items-center gap-1">
           {links.map((l) => (
             <li key={l.id}>
               <a
-                href={`#${l.id}`}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  active === l.id
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                href={l.href}
+                className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 {l.label}
               </a>
@@ -70,12 +50,28 @@ export function Nav() {
           ))}
         </ul>
 
-        <a
-          href="#avaliacao"
-          className="hidden lg:inline-flex bg-gradient-cta text-accent-foreground font-semibold text-sm px-5 py-2.5 rounded-full hover:scale-105 transition-transform shadow-glow"
-        >
-          Avaliação grátis
-        </a>
+        <div className="hidden lg:flex items-center gap-2">
+          {isAdmin && (
+            <Link to="/admin" className="text-sm font-semibold text-primary hover:text-primary/80 px-3">
+              Admin
+            </Link>
+          )}
+          {user ? (
+            <button onClick={signOut} className="text-sm text-muted-foreground hover:text-foreground px-3">
+              Sair
+            </button>
+          ) : (
+            <Link to="/login" className="text-sm text-muted-foreground hover:text-foreground px-3">
+              Entrar
+            </Link>
+          )}
+          <Link
+            to="/avaliacao"
+            className="bg-gradient-cta text-accent-foreground font-semibold text-sm px-5 py-2.5 rounded-full hover:scale-105 transition-transform shadow-glow"
+          >
+            Avaliação grátis
+          </Link>
+        </div>
 
         <button
           aria-label="Menu"
@@ -92,7 +88,7 @@ export function Nav() {
             {links.map((l) => (
               <li key={l.id}>
                 <a
-                  href={`#${l.id}`}
+                  href={l.href}
                   onClick={() => setOpen(false)}
                   className="block px-3 py-3 rounded-md text-foreground hover:bg-muted"
                 >
@@ -100,13 +96,27 @@ export function Nav() {
                 </a>
               </li>
             ))}
-            <a
-              href="#avaliacao"
+            {isAdmin && (
+              <Link to="/admin" onClick={() => setOpen(false)} className="block px-3 py-3 text-primary font-semibold">
+                Admin
+              </Link>
+            )}
+            {user ? (
+              <button onClick={() => { setOpen(false); signOut(); }} className="text-left px-3 py-3 text-muted-foreground">
+                Sair
+              </button>
+            ) : (
+              <Link to="/login" onClick={() => setOpen(false)} className="block px-3 py-3 text-muted-foreground">
+                Entrar
+              </Link>
+            )}
+            <Link
+              to="/avaliacao"
               onClick={() => setOpen(false)}
               className="mt-2 text-center bg-gradient-cta text-accent-foreground font-semibold px-5 py-3 rounded-full"
             >
               Avaliação grátis
-            </a>
+            </Link>
           </ul>
         </div>
       )}
