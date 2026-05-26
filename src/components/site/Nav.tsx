@@ -50,21 +50,21 @@ export function Nav() {
           ))}
         </ul>
 
-        <div className="hidden lg:flex items-center gap-2">
-          {isAdmin && (
-            <a href="/admin" className="text-sm font-semibold text-primary hover:text-primary/80 px-3">
-              Admin
-            </a>
-          )}
+        <div className="hidden lg:flex items-center gap-3">
           {user ? (
-            <button onClick={signOut} className="text-sm text-muted-foreground hover:text-foreground px-3">
-              Sair
-            </button>
+            <UserMenu />
           ) : (
             <a href="/login" className="text-sm text-muted-foreground hover:text-foreground px-3">
               Entrar
             </a>
           )}
+          <a
+            href="/avaliacao"
+            className="bg-gradient-cta text-accent-foreground font-semibold text-sm px-5 py-2.5 rounded-full hover:scale-105 transition-transform shadow-glow"
+          >
+            Avaliação grátis
+          </a>
+        </div>
           <a
             href="/avaliacao"
             className="bg-gradient-cta text-accent-foreground font-semibold text-sm px-5 py-2.5 rounded-full hover:scale-105 transition-transform shadow-glow"
