@@ -251,13 +251,13 @@ function Page() {
                           <div className="h-1 w-10 bg-primary/20 blur-xl mt-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
                         </div>
                         {/* Corner accents */}
-                        <div className="absolute top-6 left-6 w-1.5 h-1.5 rounded-full bg-primary/30" />
-                        <div className="absolute bottom-6 right-6 w-1.5 h-1.5 rounded-full bg-primary/30" />
+                        <div className="absolute top-4 left-4 w-1.5 h-1.5 rounded-full bg-primary/30" />
+                        <div className="absolute bottom-4 right-4 w-1.5 h-1.5 rounded-full bg-primary/30" />
                       </div>
 
-                      <div className="absolute inset-0 backface-hidden bg-gradient-primary rounded-3xl p-8 lg:p-10 shadow-glow flex flex-col justify-center text-primary-foreground" style={{ transform: "rotateY(180deg)" }}>
+                      <div className="absolute inset-0 backface-hidden bg-gradient-primary rounded-2xl p-5 shadow-glow flex flex-col justify-center text-primary-foreground" style={{ transform: "rotateY(180deg)" }}>
                         <AnimatePresence mode="wait">
-                          <motion.p key={card?.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-3xl md:text-4xl font-display font-extrabold text-center">
+                          <motion.p key={card?.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-2xl md:text-3xl font-display font-extrabold text-center">
                             {card?.answer}
                           </motion.p>
                         </AnimatePresence>
