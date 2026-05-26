@@ -126,6 +126,7 @@ function RootComponent() {
       <AuthProvider>
         <Outlet />
         <Toaster />
+        <CookieConsent />
       </AuthProvider>
     </QueryClientProvider>
   );
