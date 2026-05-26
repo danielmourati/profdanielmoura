@@ -38,12 +38,12 @@ function LoginPage() {
         });
         if (error) throw error;
         toast.success("Conta criada! Verifique seu email se necessário.");
-        navigate({ to: "/" });
+        navigate({ to: redirect });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Bem-vindo!");
-        navigate({ to: "/" });
+        navigate({ to: redirect });
       }
     } catch (err: any) {
       toast.error(err.message ?? "Erro ao autenticar");
