@@ -211,7 +211,7 @@ function Page() {
               </div>
             ) : (
               <div className="mt-10 grid lg:grid-cols-[1fr_auto] gap-8 items-start">
-                <div className="relative mx-auto w-full max-w-xl">
+                <div className="relative mx-auto w-full max-w-md">
                   <div className="mb-3 flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1 text-muted-foreground"><Timer size={14} /> {timeLeft}s</span>
                     <span className="text-muted-foreground">{index + 1} / {list.length}</span>
@@ -226,15 +226,15 @@ function Page() {
                   <div className="perspective-[1200px]">
                     <div
                       onClick={() => setFlipped((v) => !v)}
-                      className="relative cursor-pointer aspect-[5/3] preserve-3d transition-transform duration-700"
+                      className="relative cursor-pointer aspect-[16/10] preserve-3d transition-transform duration-700"
                       style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
                     >
-                      <div className="absolute inset-0 backface-hidden bg-card border border-border rounded-3xl p-8 lg:p-10 shadow-card flex flex-col justify-between overflow-hidden group/card">
-                        <div className="flex items-center justify-between text-xs uppercase tracking-widest">
+                      <div className="absolute inset-0 backface-hidden bg-card border border-border rounded-2xl p-5 shadow-card flex flex-col justify-between overflow-hidden group/card">
+                        <div className="flex items-center justify-between text-[10px] uppercase tracking-widest">
                           <span className="text-accent font-bold">{diffLabel}</span>
                           <span className="text-muted-foreground">Pergunta {index + 1}</span>
                         </div>
-                        <p className="text-2xl md:text-3xl lg:text-4xl font-display font-semibold text-center leading-tight">
+                        <p className="text-lg md:text-xl font-display font-semibold text-center leading-tight">
                           {card?.question}
                         </p>
                         {/* Glass pill affordance */}
@@ -251,13 +251,13 @@ function Page() {
                           <div className="h-1 w-10 bg-primary/20 blur-xl mt-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
                         </div>
                         {/* Corner accents */}
-                        <div className="absolute top-6 left-6 w-1.5 h-1.5 rounded-full bg-primary/30" />
-                        <div className="absolute bottom-6 right-6 w-1.5 h-1.5 rounded-full bg-primary/30" />
+                        <div className="absolute top-4 left-4 w-1.5 h-1.5 rounded-full bg-primary/30" />
+                        <div className="absolute bottom-4 right-4 w-1.5 h-1.5 rounded-full bg-primary/30" />
                       </div>
 
-                      <div className="absolute inset-0 backface-hidden bg-gradient-primary rounded-3xl p-8 lg:p-10 shadow-glow flex flex-col justify-center text-primary-foreground" style={{ transform: "rotateY(180deg)" }}>
+                      <div className="absolute inset-0 backface-hidden bg-gradient-primary rounded-2xl p-5 shadow-glow flex flex-col justify-center text-primary-foreground" style={{ transform: "rotateY(180deg)" }}>
                         <AnimatePresence mode="wait">
-                          <motion.p key={card?.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-3xl md:text-4xl font-display font-extrabold text-center">
+                          <motion.p key={card?.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-2xl md:text-3xl font-display font-extrabold text-center">
                             {card?.answer}
                           </motion.p>
                         </AnimatePresence>
@@ -265,18 +265,18 @@ function Page() {
                     </div>
                   </div>
 
-                  <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <button onClick={() => { setHits((h) => h + 1); next(); }} className="inline-flex items-center justify-center gap-2 bg-success/15 text-success border border-success/40 font-semibold py-3 rounded-full">
-                      <Check size={16} /> Acertei
+                  <div className="mt-4 grid grid-cols-4 gap-2">
+                    <button onClick={() => { setHits((h) => h + 1); next(); }} className="inline-flex items-center justify-center gap-1.5 bg-success/15 text-success border border-success/40 font-semibold py-2 text-sm rounded-full">
+                      <Check size={14} /> Acertei
                     </button>
-                    <button onClick={() => { setMiss((m) => m + 1); next(); }} className="inline-flex items-center justify-center gap-2 bg-destructive/15 text-destructive border border-destructive/40 font-semibold py-3 rounded-full">
-                      <X size={16} /> Errei
+                    <button onClick={() => { setMiss((m) => m + 1); next(); }} className="inline-flex items-center justify-center gap-1.5 bg-destructive/15 text-destructive border border-destructive/40 font-semibold py-2 text-sm rounded-full">
+                      <X size={14} /> Errei
                     </button>
-                    <button onClick={next} className="inline-flex items-center justify-center gap-2 bg-card border border-border text-muted-foreground font-semibold py-3 rounded-full">
-                      <SkipForward size={16} /> Pular
+                    <button onClick={next} className="inline-flex items-center justify-center gap-1.5 bg-card border border-border text-muted-foreground font-semibold py-2 text-sm rounded-full">
+                      <SkipForward size={14} /> Pular
                     </button>
-                    <button onClick={stop} className="inline-flex items-center justify-center gap-2 bg-destructive text-destructive-foreground font-semibold py-3 rounded-full">
-                      <Square size={16} /> Parar
+                    <button onClick={stop} className="inline-flex items-center justify-center gap-1.5 bg-destructive text-destructive-foreground font-semibold py-2 text-sm rounded-full">
+                      <Square size={14} /> Parar
                     </button>
                   </div>
                 </div>
