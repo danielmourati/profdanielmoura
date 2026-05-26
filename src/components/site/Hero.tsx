@@ -43,7 +43,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.95] tracking-tight">
+          <h1 className="text-5xl md:text-6xl lg:text-[80px] font-bold leading-[0.95] tracking-tight">
             Informática que <span className="text-gradient">aprova</span> em concurso.
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-lg">
