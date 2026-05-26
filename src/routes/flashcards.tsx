@@ -229,7 +229,7 @@ function Page() {
                       className="relative cursor-pointer aspect-[5/3] preserve-3d transition-transform duration-700"
                       style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
                     >
-                      <div className="absolute inset-0 backface-hidden bg-card border border-border rounded-3xl p-8 lg:p-10 shadow-card flex flex-col justify-between">
+                      <div className="absolute inset-0 backface-hidden bg-card border border-border rounded-3xl p-8 lg:p-10 shadow-card flex flex-col justify-between overflow-hidden group/card">
                         <div className="flex items-center justify-between text-xs uppercase tracking-widest">
                           <span className="text-accent font-bold">{diffLabel}</span>
                           <span className="text-muted-foreground">Pergunta {index + 1}</span>
@@ -237,10 +237,24 @@ function Page() {
                         <p className="text-2xl md:text-3xl lg:text-4xl font-display font-semibold text-center leading-tight">
                           {card?.question}
                         </p>
-                        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                          <RotateCw size={14} /> Toque no card para virar
+                        {/* Glass pill affordance */}
+                        <div className="relative flex flex-col items-center">
+                          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-lg transition-all duration-500 group-hover/card:bg-primary/20 group-hover/card:border-primary/30 group-hover/card:scale-105">
+                            <div className="relative flex items-center justify-center">
+                              <FlipHorizontal size={16} className="text-primary transition-transform duration-700 group-hover/card:rotate-180" />
+                              <div className="absolute inset-0 bg-primary/30 rounded-full blur-md scale-0 group-hover/card:scale-150 transition-transform duration-700 opacity-0 group-hover/card:opacity-100" />
+                            </div>
+                            <span className="text-xs font-semibold text-muted-foreground tracking-wide transition-colors group-hover/card:text-primary-foreground">
+                              Toque no card para virar
+                            </span>
+                          </div>
+                          <div className="h-1 w-10 bg-primary/20 blur-xl mt-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
                         </div>
+                        {/* Corner accents */}
+                        <div className="absolute top-6 left-6 w-1.5 h-1.5 rounded-full bg-primary/30" />
+                        <div className="absolute bottom-6 right-6 w-1.5 h-1.5 rounded-full bg-primary/30" />
                       </div>
+
                       <div className="absolute inset-0 backface-hidden bg-gradient-primary rounded-3xl p-8 lg:p-10 shadow-glow flex flex-col justify-center text-primary-foreground" style={{ transform: "rotateY(180deg)" }}>
                         <AnimatePresence mode="wait">
                           <motion.p key={card?.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-3xl md:text-4xl font-display font-extrabold text-center">
