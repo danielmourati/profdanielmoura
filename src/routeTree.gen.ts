@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MinhaAreaRouteImport } from './routes/minha-area'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FlashcardsRouteImport } from './routes/flashcards'
 import { Route as DownloadsRouteImport } from './routes/downloads'
@@ -25,6 +26,11 @@ import { Route as AdminAttemptsRouteImport } from './routes/admin.attempts'
 import { Route as AdminAssessmentsRouteImport } from './routes/admin.assessments'
 import { Route as AdminAssessmentsIdRouteImport } from './routes/admin.assessments.$id'
 
+const MinhaAreaRoute = MinhaAreaRouteImport.update({
+  id: '/minha-area',
+  path: '/minha-area',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
+  '/minha-area': typeof MinhaAreaRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
+  '/minha-area': typeof MinhaAreaRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
+  '/minha-area': typeof MinhaAreaRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/flashcards'
     | '/login'
+    | '/minha-area'
     | '/admin/assessments'
     | '/admin/attempts'
     | '/admin/downloads'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/flashcards'
     | '/login'
+    | '/minha-area'
     | '/admin/assessments'
     | '/admin/attempts'
     | '/admin/downloads'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/flashcards'
     | '/login'
+    | '/minha-area'
     | '/admin/assessments'
     | '/admin/attempts'
     | '/admin/downloads'
@@ -211,12 +223,20 @@ export interface RootRouteChildren {
   DownloadsRoute: typeof DownloadsRoute
   FlashcardsRoute: typeof FlashcardsRoute
   LoginRoute: typeof LoginRoute
+  MinhaAreaRoute: typeof MinhaAreaRoute
   AvaliacaoSlugRoute: typeof AvaliacaoSlugRoute
   AvaliacaoIndexRoute: typeof AvaliacaoIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/minha-area': {
+      id: '/minha-area'
+      path: '/minha-area'
+      fullPath: '/minha-area'
+      preLoaderRoute: typeof MinhaAreaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -364,6 +384,7 @@ const rootRouteChildren: RootRouteChildren = {
   DownloadsRoute: DownloadsRoute,
   FlashcardsRoute: FlashcardsRoute,
   LoginRoute: LoginRoute,
+  MinhaAreaRoute: MinhaAreaRoute,
   AvaliacaoSlugRoute: AvaliacaoSlugRoute,
   AvaliacaoIndexRoute: AvaliacaoIndexRoute,
 }
