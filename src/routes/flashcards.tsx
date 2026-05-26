@@ -266,10 +266,18 @@ function Page() {
                   </div>
 
                   <div className="mt-4 grid grid-cols-4 gap-2">
-                    <button onClick={() => { setHits((h) => h + 1); next(); }} className="inline-flex items-center justify-center gap-1.5 bg-success/15 text-success border border-success/40 font-semibold py-2 text-sm rounded-full">
+                    <button
+                      onClick={() => { setHits((h) => h + 1); next(); }}
+                      disabled={!flipped}
+                      className="inline-flex items-center justify-center gap-1.5 bg-success/15 text-success border border-success/40 font-semibold py-2 text-sm rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:bg-success hover:enabled:text-background"
+                    >
                       <Check size={14} /> Acertei
                     </button>
-                    <button onClick={() => { setMiss((m) => m + 1); next(); }} className="inline-flex items-center justify-center gap-1.5 bg-destructive/15 text-destructive border border-destructive/40 font-semibold py-2 text-sm rounded-full">
+                    <button
+                      onClick={() => { setMiss((m) => m + 1); next(); }}
+                      disabled={!flipped}
+                      className="inline-flex items-center justify-center gap-1.5 bg-destructive/15 text-destructive border border-destructive/40 font-semibold py-2 text-sm rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:bg-destructive hover:enabled:text-destructive-foreground"
+                    >
                       <X size={14} /> Errei
                     </button>
                     <button onClick={next} className="inline-flex items-center justify-center gap-1.5 bg-card border border-border text-muted-foreground font-semibold py-2 text-sm rounded-full">
