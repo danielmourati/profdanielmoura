@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { Link } from "@tanstack/react-router";
 import logoProf from "@/assets/logo-prof.png";
 import { useAuth } from "@/lib/auth-context";
 
@@ -33,9 +32,9 @@ export function Nav() {
       }`}
     >
       <nav className="max-w-7xl mx-auto px-5 lg:h-24 lg:px-8 h-20 flex items-center justify-between">
-        <Link to="/" className="flex items-center" aria-label="Prof. Daniel Moura">
+        <a href="/" className="flex items-center" aria-label="Prof. Daniel Moura">
           <img src={logoProf} alt="Prof. Daniel Moura" className="h-16 lg:h-[4.5rem] w-auto" />
-        </Link>
+        </a>
 
         <ul className="hidden lg:flex items-center gap-1">
           {links.map((l) => (
@@ -52,25 +51,25 @@ export function Nav() {
 
         <div className="hidden lg:flex items-center gap-2">
           {isAdmin && (
-            <Link to="/admin" className="text-sm font-semibold text-primary hover:text-primary/80 px-3">
+            <a href="/admin" className="text-sm font-semibold text-primary hover:text-primary/80 px-3">
               Admin
-            </Link>
+            </a>
           )}
           {user ? (
             <button onClick={signOut} className="text-sm text-muted-foreground hover:text-foreground px-3">
               Sair
             </button>
           ) : (
-            <Link to="/login" className="text-sm text-muted-foreground hover:text-foreground px-3">
+            <a href="/login" className="text-sm text-muted-foreground hover:text-foreground px-3">
               Entrar
-            </Link>
+            </a>
           )}
-          <Link
-            to="/avaliacao"
+          <a
+            href="/avaliacao"
             className="bg-gradient-cta text-accent-foreground font-semibold text-sm px-5 py-2.5 rounded-full hover:scale-105 transition-transform shadow-glow"
           >
             Avaliação grátis
-          </Link>
+          </a>
         </div>
 
         <button
@@ -97,26 +96,26 @@ export function Nav() {
               </li>
             ))}
             {isAdmin && (
-              <Link to="/admin" onClick={() => setOpen(false)} className="block px-3 py-3 text-primary font-semibold">
+              <a href="/admin" onClick={() => setOpen(false)} className="block px-3 py-3 text-primary font-semibold">
                 Admin
-              </Link>
+              </a>
             )}
             {user ? (
               <button onClick={() => { setOpen(false); signOut(); }} className="text-left px-3 py-3 text-muted-foreground">
                 Sair
               </button>
             ) : (
-              <Link to="/login" onClick={() => setOpen(false)} className="block px-3 py-3 text-muted-foreground">
+              <a href="/login" onClick={() => setOpen(false)} className="block px-3 py-3 text-muted-foreground">
                 Entrar
-              </Link>
+              </a>
             )}
-            <Link
-              to="/avaliacao"
+            <a
+              href="/avaliacao"
               onClick={() => setOpen(false)}
               className="mt-2 text-center bg-gradient-cta text-accent-foreground font-semibold px-5 py-3 rounded-full"
             >
               Avaliação grátis
-            </Link>
+            </a>
           </ul>
         </div>
       )}
