@@ -2,11 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Check, X, SkipForward, RotateCw, Play, Square, Timer } from "lucide-react";
+import { Brain, Check, X, SkipForward, RotateCw, Play, Square, Timer, FlipHorizontal } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { AuthGate } from "@/components/site/AuthGate";
 import { supabase } from "@/integrations/supabase/client";
+
 
 export const Route = createFileRoute("/flashcards")({
   head: () => ({ meta: [{ title: "Flashcards — Informática para Concursos" }] }),
