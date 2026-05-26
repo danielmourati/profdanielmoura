@@ -65,13 +65,6 @@ export function Nav() {
             Avaliação grátis
           </a>
         </div>
-          <a
-            href="/avaliacao"
-            className="bg-gradient-cta text-accent-foreground font-semibold text-sm px-5 py-2.5 rounded-full hover:scale-105 transition-transform shadow-glow"
-          >
-            Avaliação grátis
-          </a>
-        </div>
 
         <button
           aria-label="Menu"
