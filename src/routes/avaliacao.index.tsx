@@ -3,12 +3,21 @@ import { useQuery } from "@tanstack/react-query";
 import { ClipboardList, ArrowRight } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
+import { AuthGate } from "@/components/site/AuthGate";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/avaliacao/")({
   head: () => ({ meta: [{ title: "Avaliação Diagnóstica — Prof. Daniel Moura" }] }),
-  component: Page,
+  component: Gated,
 });
+
+function Gated() {
+  return (
+    <AuthGate redirect="/avaliacao">
+      <Page />
+    </AuthGate>
+  );
+}
 
 function Page() {
   const { data = [], isLoading } = useQuery({
