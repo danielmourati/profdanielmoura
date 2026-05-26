@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
+import { Route as AdminDownloadsRouteImport } from './routes/admin.downloads'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -46,11 +47,17 @@ const AdminFlashcardsRoute = AdminFlashcardsRouteImport.update({
   path: '/flashcards',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDownloadsRoute = AdminDownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
+  '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/': typeof AdminIndexRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin': typeof AdminIndexRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
+  '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/': typeof AdminIndexRoute
@@ -77,16 +86,24 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/login'
+    | '/admin/downloads'
     | '/admin/flashcards'
     | '/admin/products'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/admin/flashcards' | '/admin/products' | '/admin'
+  to:
+    | '/'
+    | '/login'
+    | '/admin/downloads'
+    | '/admin/flashcards'
+    | '/admin/products'
+    | '/admin'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/login'
+    | '/admin/downloads'
     | '/admin/flashcards'
     | '/admin/products'
     | '/admin/'
@@ -142,16 +159,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFlashcardsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/downloads': {
+      id: '/admin/downloads'
+      path: '/downloads'
+      fullPath: '/admin/downloads'
+      preLoaderRoute: typeof AdminDownloadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminDownloadsRoute: typeof AdminDownloadsRoute
   AdminFlashcardsRoute: typeof AdminFlashcardsRoute
   AdminProductsRoute: typeof AdminProductsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminDownloadsRoute: AdminDownloadsRoute,
   AdminFlashcardsRoute: AdminFlashcardsRoute,
   AdminProductsRoute: AdminProductsRoute,
   AdminIndexRoute: AdminIndexRoute,
