@@ -17,6 +17,7 @@ import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonia
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
 import { Route as AdminDownloadsRouteImport } from './routes/admin.downloads'
+import { Route as AdminAttemptsRouteImport } from './routes/admin.attempts'
 import { Route as AdminAssessmentsRouteImport } from './routes/admin.assessments'
 import { Route as AdminAssessmentsIdRouteImport } from './routes/admin.assessments.$id'
 
@@ -60,6 +61,11 @@ const AdminDownloadsRoute = AdminDownloadsRouteImport.update({
   path: '/downloads',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAttemptsRoute = AdminAttemptsRouteImport.update({
+  id: '/attempts',
+  path: '/attempts',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAssessmentsRoute = AdminAssessmentsRouteImport.update({
   id: '/assessments',
   path: '/assessments',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
+  '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
+  '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
+  '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/login'
     | '/admin/assessments'
+    | '/admin/attempts'
     | '/admin/downloads'
     | '/admin/flashcards'
     | '/admin/products'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/admin/assessments'
+    | '/admin/attempts'
     | '/admin/downloads'
     | '/admin/flashcards'
     | '/admin/products'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/login'
     | '/admin/assessments'
+    | '/admin/attempts'
     | '/admin/downloads'
     | '/admin/flashcards'
     | '/admin/products'
@@ -209,6 +221,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDownloadsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/attempts': {
+      id: '/admin/attempts'
+      path: '/attempts'
+      fullPath: '/admin/attempts'
+      preLoaderRoute: typeof AdminAttemptsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/assessments': {
       id: '/admin/assessments'
       path: '/assessments'
@@ -239,6 +258,7 @@ const AdminAssessmentsRouteWithChildren =
 
 interface AdminRouteChildren {
   AdminAssessmentsRoute: typeof AdminAssessmentsRouteWithChildren
+  AdminAttemptsRoute: typeof AdminAttemptsRoute
   AdminDownloadsRoute: typeof AdminDownloadsRoute
   AdminFlashcardsRoute: typeof AdminFlashcardsRoute
   AdminProductsRoute: typeof AdminProductsRoute
@@ -248,6 +268,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAssessmentsRoute: AdminAssessmentsRouteWithChildren,
+  AdminAttemptsRoute: AdminAttemptsRoute,
   AdminDownloadsRoute: AdminDownloadsRoute,
   AdminFlashcardsRoute: AdminFlashcardsRoute,
   AdminProductsRoute: AdminProductsRoute,
