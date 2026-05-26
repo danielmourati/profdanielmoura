@@ -9,38 +9,262 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MinhaAreaRouteImport } from './routes/minha-area'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as FlashcardsRouteImport } from './routes/flashcards'
+import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AvaliacaoIndexRouteImport } from './routes/avaliacao.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AvaliacaoSlugRouteImport } from './routes/avaliacao.$slug'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
+import { Route as AdminDownloadsRouteImport } from './routes/admin.downloads'
+import { Route as AdminAttemptsRouteImport } from './routes/admin.attempts'
+import { Route as AdminAssessmentsRouteImport } from './routes/admin.assessments'
+import { Route as AdminAssessmentsIdRouteImport } from './routes/admin.assessments.$id'
 
+const MinhaAreaRoute = MinhaAreaRouteImport.update({
+  id: '/minha-area',
+  path: '/minha-area',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlashcardsRoute = FlashcardsRouteImport.update({
+  id: '/flashcards',
+  path: '/flashcards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AvaliacaoIndexRoute = AvaliacaoIndexRouteImport.update({
+  id: '/avaliacao/',
+  path: '/avaliacao/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AvaliacaoSlugRoute = AvaliacaoSlugRouteImport.update({
+  id: '/avaliacao/$slug',
+  path: '/avaliacao/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFlashcardsRoute = AdminFlashcardsRouteImport.update({
+  id: '/flashcards',
+  path: '/flashcards',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDownloadsRoute = AdminDownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAttemptsRoute = AdminAttemptsRouteImport.update({
+  id: '/attempts',
+  path: '/attempts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAssessmentsRoute = AdminAssessmentsRouteImport.update({
+  id: '/assessments',
+  path: '/assessments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAssessmentsIdRoute = AdminAssessmentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAssessmentsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/downloads': typeof DownloadsRoute
+  '/flashcards': typeof FlashcardsRoute
+  '/login': typeof LoginRoute
+  '/minha-area': typeof MinhaAreaRoute
+  '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
+  '/admin/attempts': typeof AdminAttemptsRoute
+  '/admin/downloads': typeof AdminDownloadsRoute
+  '/admin/flashcards': typeof AdminFlashcardsRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/avaliacao/$slug': typeof AvaliacaoSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/avaliacao/': typeof AvaliacaoIndexRoute
+  '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/downloads': typeof DownloadsRoute
+  '/flashcards': typeof FlashcardsRoute
+  '/login': typeof LoginRoute
+  '/minha-area': typeof MinhaAreaRoute
+  '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
+  '/admin/attempts': typeof AdminAttemptsRoute
+  '/admin/downloads': typeof AdminDownloadsRoute
+  '/admin/flashcards': typeof AdminFlashcardsRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/avaliacao/$slug': typeof AvaliacaoSlugRoute
+  '/admin': typeof AdminIndexRoute
+  '/avaliacao': typeof AvaliacaoIndexRoute
+  '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/downloads': typeof DownloadsRoute
+  '/flashcards': typeof FlashcardsRoute
+  '/login': typeof LoginRoute
+  '/minha-area': typeof MinhaAreaRoute
+  '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
+  '/admin/attempts': typeof AdminAttemptsRoute
+  '/admin/downloads': typeof AdminDownloadsRoute
+  '/admin/flashcards': typeof AdminFlashcardsRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/avaliacao/$slug': typeof AvaliacaoSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/avaliacao/': typeof AvaliacaoIndexRoute
+  '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/downloads'
+    | '/flashcards'
+    | '/login'
+    | '/minha-area'
+    | '/admin/assessments'
+    | '/admin/attempts'
+    | '/admin/downloads'
+    | '/admin/flashcards'
+    | '/admin/products'
+    | '/admin/testimonials'
+    | '/avaliacao/$slug'
+    | '/admin/'
+    | '/avaliacao/'
+    | '/admin/assessments/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/downloads'
+    | '/flashcards'
+    | '/login'
+    | '/minha-area'
+    | '/admin/assessments'
+    | '/admin/attempts'
+    | '/admin/downloads'
+    | '/admin/flashcards'
+    | '/admin/products'
+    | '/admin/testimonials'
+    | '/avaliacao/$slug'
+    | '/admin'
+    | '/avaliacao'
+    | '/admin/assessments/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/downloads'
+    | '/flashcards'
+    | '/login'
+    | '/minha-area'
+    | '/admin/assessments'
+    | '/admin/attempts'
+    | '/admin/downloads'
+    | '/admin/flashcards'
+    | '/admin/products'
+    | '/admin/testimonials'
+    | '/avaliacao/$slug'
+    | '/admin/'
+    | '/avaliacao/'
+    | '/admin/assessments/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  DownloadsRoute: typeof DownloadsRoute
+  FlashcardsRoute: typeof FlashcardsRoute
+  LoginRoute: typeof LoginRoute
+  MinhaAreaRoute: typeof MinhaAreaRoute
+  AvaliacaoSlugRoute: typeof AvaliacaoSlugRoute
+  AvaliacaoIndexRoute: typeof AvaliacaoIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/minha-area': {
+      id: '/minha-area'
+      path: '/minha-area'
+      fullPath: '/minha-area'
+      preLoaderRoute: typeof MinhaAreaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flashcards': {
+      id: '/flashcards'
+      path: '/flashcards'
+      fullPath: '/flashcards'
+      preLoaderRoute: typeof FlashcardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +272,121 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/avaliacao/': {
+      id: '/avaliacao/'
+      path: '/avaliacao'
+      fullPath: '/avaliacao/'
+      preLoaderRoute: typeof AvaliacaoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/avaliacao/$slug': {
+      id: '/avaliacao/$slug'
+      path: '/avaliacao/$slug'
+      fullPath: '/avaliacao/$slug'
+      preLoaderRoute: typeof AvaliacaoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/flashcards': {
+      id: '/admin/flashcards'
+      path: '/flashcards'
+      fullPath: '/admin/flashcards'
+      preLoaderRoute: typeof AdminFlashcardsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/downloads': {
+      id: '/admin/downloads'
+      path: '/downloads'
+      fullPath: '/admin/downloads'
+      preLoaderRoute: typeof AdminDownloadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/attempts': {
+      id: '/admin/attempts'
+      path: '/attempts'
+      fullPath: '/admin/attempts'
+      preLoaderRoute: typeof AdminAttemptsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/assessments': {
+      id: '/admin/assessments'
+      path: '/assessments'
+      fullPath: '/admin/assessments'
+      preLoaderRoute: typeof AdminAssessmentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/assessments/$id': {
+      id: '/admin/assessments/$id'
+      path: '/$id'
+      fullPath: '/admin/assessments/$id'
+      preLoaderRoute: typeof AdminAssessmentsIdRouteImport
+      parentRoute: typeof AdminAssessmentsRoute
+    }
   }
 }
 
+interface AdminAssessmentsRouteChildren {
+  AdminAssessmentsIdRoute: typeof AdminAssessmentsIdRoute
+}
+
+const AdminAssessmentsRouteChildren: AdminAssessmentsRouteChildren = {
+  AdminAssessmentsIdRoute: AdminAssessmentsIdRoute,
+}
+
+const AdminAssessmentsRouteWithChildren =
+  AdminAssessmentsRoute._addFileChildren(AdminAssessmentsRouteChildren)
+
+interface AdminRouteChildren {
+  AdminAssessmentsRoute: typeof AdminAssessmentsRouteWithChildren
+  AdminAttemptsRoute: typeof AdminAttemptsRoute
+  AdminDownloadsRoute: typeof AdminDownloadsRoute
+  AdminFlashcardsRoute: typeof AdminFlashcardsRoute
+  AdminProductsRoute: typeof AdminProductsRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAssessmentsRoute: AdminAssessmentsRouteWithChildren,
+  AdminAttemptsRoute: AdminAttemptsRoute,
+  AdminDownloadsRoute: AdminDownloadsRoute,
+  AdminFlashcardsRoute: AdminFlashcardsRoute,
+  AdminProductsRoute: AdminProductsRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  DownloadsRoute: DownloadsRoute,
+  FlashcardsRoute: FlashcardsRoute,
+  LoginRoute: LoginRoute,
+  MinhaAreaRoute: MinhaAreaRoute,
+  AvaliacaoSlugRoute: AvaliacaoSlugRoute,
+  AvaliacaoIndexRoute: AvaliacaoIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
