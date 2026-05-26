@@ -53,10 +53,10 @@ function Page() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
-                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
-                  <YAxis domain={[0, 100]} stroke="hsl(var(--muted-foreground))" />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }} />
-                  <Line type="monotone" dataKey="score" stroke="hsl(var(--primary))" strokeWidth={3} />
+                  <XAxis dataKey="name" stroke="var(--muted-foreground)" />
+                  <YAxis domain={[0, 100]} stroke="var(--muted-foreground)" />
+                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", color: "var(--foreground)" }} />
+                  <Line type="monotone" dataKey="score" stroke="var(--primary)" strokeWidth={3} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
