@@ -226,15 +226,15 @@ function Page() {
                   <div className="perspective-[1200px]">
                     <div
                       onClick={() => setFlipped((v) => !v)}
-                      className="relative cursor-pointer aspect-[5/3] preserve-3d transition-transform duration-700"
+                      className="relative cursor-pointer aspect-[16/10] preserve-3d transition-transform duration-700"
                       style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
                     >
-                      <div className="absolute inset-0 backface-hidden bg-card border border-border rounded-3xl p-8 lg:p-10 shadow-card flex flex-col justify-between overflow-hidden group/card">
-                        <div className="flex items-center justify-between text-xs uppercase tracking-widest">
+                      <div className="absolute inset-0 backface-hidden bg-card border border-border rounded-2xl p-5 shadow-card flex flex-col justify-between overflow-hidden group/card">
+                        <div className="flex items-center justify-between text-[10px] uppercase tracking-widest">
                           <span className="text-accent font-bold">{diffLabel}</span>
                           <span className="text-muted-foreground">Pergunta {index + 1}</span>
                         </div>
-                        <p className="text-2xl md:text-3xl lg:text-4xl font-display font-semibold text-center leading-tight">
+                        <p className="text-lg md:text-xl font-display font-semibold text-center leading-tight">
                           {card?.question}
                         </p>
                         {/* Glass pill affordance */}
