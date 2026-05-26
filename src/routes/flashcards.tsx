@@ -44,6 +44,8 @@ function Page() {
   const [miss, setMiss] = useState(0);
   const [timeLeft, setTimeLeft] = useState(seconds);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const startedAtRef = useRef<number | null>(null);
+  const savedRef = useRef(false);
 
   const cats = useQuery({
     queryKey: ["fc_cats"],
@@ -87,6 +89,8 @@ function Page() {
 
   const start = () => {
     setIndex(0); setHits(0); setMiss(0); setFlipped(false); setDone(false);
+    startedAtRef.current = Date.now();
+    savedRef.current = false;
     setPlaying(true);
   };
 
@@ -94,6 +98,34 @@ function Page() {
     if (timerRef.current) clearInterval(timerRef.current);
     setPlaying(false); setDone(true);
   };
+
+  // Save session when done
+  useEffect(() => {
+    if (!done || savedRef.current) return;
+    const total = hits + miss;
+    if (total === 0) return;
+    savedRef.current = true;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      const duration = startedAtRef.current
+        ? Math.round((Date.now() - startedAtRef.current) / 1000)
+        : null;
+      const catName = catId
+        ? (cats.data ?? []).find((c: any) => c.id === catId)?.name ?? null
+        : "Todas";
+      await supabase.from("flashcard_sessions" as any).insert({
+        user_id: auth.user.id,
+        category_id: catId,
+        category_name: catName,
+        level: diff,
+        total,
+        correct: hits,
+        wrong: miss,
+        duration_seconds: duration,
+      } as any);
+    })();
+  }, [done, hits, miss, catId, diff, cats.data]);
 
   const restart = () => {
     setDiff(null); setCatId(null); setCatChosen(false);
