@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ClipboardCheck, Target, TrendingUp, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import floatQuiz from "@/assets/float-quiz.png";
 import floatChart from "@/assets/float-chart.png";
 import floatProgress from "@/assets/float-progress.png";
@@ -72,13 +73,13 @@ export function FreeEval() {
             ))}
           </ul>
 
-          <a
-            href="#LINK_AVALIACAO_AQUI"
+          <Link
+            to="/avaliacao"
             className="mt-10 group inline-flex items-center justify-center gap-2 bg-gradient-cta text-accent-foreground font-bold px-8 py-4 rounded-full hover:scale-[1.02] transition-transform shadow-glow"
           >
             Fazer diagnóstico gratuito
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </a>
+          </Link>
           <p className="text-xs text-muted-foreground mt-3">
             Leva apenas alguns minutos. Sem custo, sem compromisso.
           </p>

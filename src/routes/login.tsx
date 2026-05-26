@@ -6,12 +6,17 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Entrar — Prof. Daniel Moura" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    redirect: typeof s.redirect === "string" ? s.redirect : "/",
+    mode: s.mode === "signup" ? "signup" : "login",
+  }),
   component: LoginPage,
 });
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const { redirect, mode: initialMode } = Route.useSearch();
+  const [mode, setMode] = useState<"login" | "signup">(initialMode as "login" | "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -33,12 +38,12 @@ function LoginPage() {
         });
         if (error) throw error;
         toast.success("Conta criada! Verifique seu email se necessário.");
-        navigate({ to: "/" });
+        navigate({ to: redirect });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Bem-vindo!");
-        navigate({ to: "/" });
+        navigate({ to: redirect });
       }
     } catch (err: any) {
       toast.error(err.message ?? "Erro ao autenticar");

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Check, X, SkipForward, RotateCw } from "lucide-react";
+import { Brain, Check, X, SkipForward, RotateCw, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 type Card = { q: string; a: string };
 type Cat = { id: string; label: string; cards: Card[] };
@@ -97,6 +98,16 @@ export function Flashcards() {
           </h2>
           <p className="mt-4 text-muted-foreground">
             Responda, vire o card e marque se acertou ou errou. Ideal para revisar como no método Anki.
+          </p>
+          <Link
+            to="/flashcards"
+            className="mt-8 group inline-flex items-center justify-center gap-2 bg-gradient-cta text-accent-foreground font-bold px-8 py-4 rounded-full hover:scale-[1.02] transition-transform shadow-glow"
+          >
+            Iniciar treinamento grátis
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+          <p className="text-xs text-muted-foreground mt-3">
+            Acesso liberado após cadastro gratuito.
           </p>
         </div>
 

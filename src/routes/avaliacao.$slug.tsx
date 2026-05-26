@@ -4,13 +4,23 @@ import { useState } from "react";
 import { ChevronRight, RotateCw, Trophy } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
+import { AuthGate } from "@/components/site/AuthGate";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/avaliacao/$slug")({
-  component: Page,
+  component: Gated,
 });
+
+function Gated() {
+  const { slug } = Route.useParams();
+  return (
+    <AuthGate redirect={`/avaliacao/${slug}`}>
+      <Page />
+    </AuthGate>
+  );
+}
 
 type Option = { id: string; text: string };
 
