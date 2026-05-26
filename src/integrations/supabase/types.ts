@@ -14,16 +14,423 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assessment_attempts: {
+        Row: {
+          answers: Json
+          assessment_id: string
+          band_label: string | null
+          band_message: string | null
+          correct_count: number
+          created_at: string
+          id: string
+          score: number
+          total_questions: number
+          user_id: string | null
+        }
+        Insert: {
+          answers?: Json
+          assessment_id: string
+          band_label?: string | null
+          band_message?: string | null
+          correct_count: number
+          created_at?: string
+          id?: string
+          score: number
+          total_questions: number
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          assessment_id?: string
+          band_label?: string | null
+          band_message?: string | null
+          correct_count?: number
+          created_at?: string
+          id?: string
+          score?: number
+          total_questions?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_attempts_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessment_questions: {
+        Row: {
+          assessment_id: string
+          correct_option_id: string
+          created_at: string
+          id: string
+          options: Json
+          order_index: number
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          assessment_id: string
+          correct_option_id: string
+          created_at?: string
+          id?: string
+          options?: Json
+          order_index?: number
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          assessment_id?: string
+          correct_option_id?: string
+          created_at?: string
+          id?: string
+          options?: Json
+          order_index?: number
+          question?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_questions_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessments: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          id: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      downloads: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          file_name: string
+          file_type: string
+          file_url: string
+          icon: string
+          id: string
+          order_index: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          file_name: string
+          file_type?: string
+          file_url: string
+          icon?: string
+          id?: string
+          order_index?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          file_name?: string
+          file_type?: string
+          file_url?: string
+          icon?: string
+          id?: string
+          order_index?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      flashcard_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          order_index: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          order_index?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          order_index?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      flashcards: {
+        Row: {
+          answer: string
+          category_id: string
+          created_at: string
+          difficulty: Database["public"]["Enums"]["flashcard_difficulty"]
+          id: string
+          order_index: number
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          category_id: string
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["flashcard_difficulty"]
+          id?: string
+          order_index?: number
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          category_id?: string
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["flashcard_difficulty"]
+          id?: string
+          order_index?: number
+          question?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcards_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "flashcard_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          accent: string
+          active: boolean
+          badge: string | null
+          checkout_url: string
+          created_at: string
+          description: string
+          features: Json
+          id: string
+          image_url: string | null
+          order_index: number
+          price_cents: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          accent?: string
+          active?: boolean
+          badge?: string | null
+          checkout_url?: string
+          created_at?: string
+          description?: string
+          features?: Json
+          id?: string
+          image_url?: string | null
+          order_index?: number
+          price_cents?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          accent?: string
+          active?: boolean
+          badge?: string | null
+          checkout_url?: string
+          created_at?: string
+          description?: string
+          features?: Json
+          id?: string
+          image_url?: string | null
+          order_index?: number
+          price_cents?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      score_bands: {
+        Row: {
+          assessment_id: string
+          color: string
+          created_at: string
+          id: string
+          label: string
+          max_score: number
+          message: string
+          min_score: number
+          order_index: number
+        }
+        Insert: {
+          assessment_id: string
+          color?: string
+          created_at?: string
+          id?: string
+          label: string
+          max_score: number
+          message: string
+          min_score: number
+          order_index?: number
+        }
+        Update: {
+          assessment_id?: string
+          color?: string
+          created_at?: string
+          id?: string
+          label?: string
+          max_score?: number
+          message?: string
+          min_score?: number
+          order_index?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "score_bands_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      testimonials: {
+        Row: {
+          active: boolean
+          avatar_url: string | null
+          content: string
+          created_at: string
+          id: string
+          name: string
+          order_index: number
+          rating: number
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          avatar_url?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          name: string
+          order_index?: number
+          rating?: number
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          avatar_url?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          name?: string
+          order_index?: number
+          rating?: number
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      flashcard_difficulty: "facil" | "medio" | "dificil"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +557,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      flashcard_difficulty: ["facil", "medio", "dificil"],
+    },
   },
 } as const
