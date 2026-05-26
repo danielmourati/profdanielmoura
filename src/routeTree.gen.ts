@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AvaliacaoIndexRouteImport } from './routes/avaliacao.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AvaliacaoSlugRouteImport } from './routes/avaliacao.$slug'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
@@ -71,6 +72,11 @@ const AvaliacaoSlugRoute = AvaliacaoSlugRouteImport.update({
   path: '/avaliacao/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/avaliacao/': typeof AvaliacaoIndexRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
   '/admin': typeof AdminIndexRoute
   '/avaliacao': typeof AvaliacaoIndexRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/avaliacao/': typeof AvaliacaoIndexRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/admin/flashcards'
     | '/admin/products'
     | '/admin/testimonials'
+    | '/admin/users'
     | '/avaliacao/$slug'
     | '/admin/'
     | '/avaliacao/'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/admin/flashcards'
     | '/admin/products'
     | '/admin/testimonials'
+    | '/admin/users'
     | '/avaliacao/$slug'
     | '/admin'
     | '/avaliacao'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/admin/flashcards'
     | '/admin/products'
     | '/admin/testimonials'
+    | '/admin/users'
     | '/avaliacao/$slug'
     | '/admin/'
     | '/avaliacao/'
@@ -293,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AvaliacaoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/testimonials': {
       id: '/admin/testimonials'
       path: '/testimonials'
@@ -363,6 +382,7 @@ interface AdminRouteChildren {
   AdminFlashcardsRoute: typeof AdminFlashcardsRoute
   AdminProductsRoute: typeof AdminProductsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -373,6 +393,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminFlashcardsRoute: AdminFlashcardsRoute,
   AdminProductsRoute: AdminProductsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

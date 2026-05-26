@@ -20,6 +20,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -33,7 +34,7 @@ function LoginPage() {
           password,
           options: {
             emailRedirectTo: window.location.origin,
-            data: { display_name: name || email.split("@")[0] },
+            data: { display_name: name || email.split("@")[0], phone: phone || null },
           },
         });
         if (error) throw error;
@@ -65,14 +66,26 @@ function LoginPage() {
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           {mode === "signup" && (
-            <div>
-              <label className="text-sm font-medium">Nome</label>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full bg-background border border-border rounded-md px-3 py-2"
-              />
-            </div>
+            <>
+              <div>
+                <label className="text-sm font-medium">Nome</label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-1 w-full bg-background border border-border rounded-md px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">WhatsApp <span className="text-muted-foreground font-normal">(opcional)</span></label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="(11) 99999-9999"
+                  className="mt-1 w-full bg-background border border-border rounded-md px-3 py-2"
+                />
+              </div>
+            </>
           )}
           <div>
             <label className="text-sm font-medium">Email</label>
