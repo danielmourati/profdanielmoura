@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import logoProf from "@/assets/logo-prof.png";
 import { useAuth } from "@/lib/auth-context";
+import { UserMenu } from "./UserMenu";
 
 const links = [
   { id: "inicio", label: "Início", href: "/#inicio" },
