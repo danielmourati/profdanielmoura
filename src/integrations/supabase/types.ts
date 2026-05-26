@@ -417,7 +417,44 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      assessment_questions_public: {
+        Row: {
+          assessment_id: string | null
+          created_at: string | null
+          id: string | null
+          options: Json | null
+          order_index: number | null
+          question: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          assessment_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          options?: Json | null
+          order_index?: number | null
+          question?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          assessment_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          options?: Json | null
+          order_index?: number | null
+          question?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_questions_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
@@ -426,6 +463,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      submit_assessment: {
+        Args: { p_answers: Json; p_assessment_id: string }
+        Returns: Json
       }
     }
     Enums: {

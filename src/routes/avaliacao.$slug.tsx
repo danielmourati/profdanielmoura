@@ -37,7 +37,7 @@ function Page() {
       const { data: a } = await supabase.from("assessments").select("*").eq("slug", slug).eq("active", true).maybeSingle();
       if (!a) return null;
       const [{ data: questions }, { data: bands }] = await Promise.all([
-        supabase.from("assessment_questions").select("*").eq("assessment_id", a.id).order("order_index"),
+        supabase.from("assessment_questions_public" as any).select("*").eq("assessment_id", a.id).order("order_index"),
         supabase.from("score_bands").select("*").eq("assessment_id", a.id).order("min_score"),
       ]);
       return { ...a, questions: questions ?? [], bands: bands ?? [] };
@@ -47,29 +47,22 @@ function Page() {
   const submit = useMutation({
     mutationFn: async () => {
       const a = assessment.data!;
-      let correct = 0;
-      const detail = a.questions.map((q: any) => {
-        const picked = answers[q.id];
-        const ok = picked === q.correct_option_id;
-        if (ok) correct++;
-        return { question_id: q.id, picked, correct: ok };
+      const { data, error } = await supabase.rpc("submit_assessment" as any, {
+        p_assessment_id: a.id,
+        p_answers: answers as any,
       });
-      const total = a.questions.length;
-      const score = total ? Math.round((correct / total) * 100) : 0;
-      const band = (a.bands as any[]).find((b) => score >= b.min_score && score <= b.max_score) ?? null;
-
-      await supabase.from("assessment_attempts").insert({
-        assessment_id: a.id,
-        user_id: user?.id ?? null,
-        score, correct_count: correct, total_questions: total,
-        band_label: band?.label ?? null, band_message: band?.message ?? null,
-        answers: detail as any,
+      if (error) throw error;
+      const res = data as any;
+      setResult({
+        score: res.score,
+        correct: res.correct,
+        total: res.total,
+        band: res.band,
       });
-
-      setResult({ score, correct, total, band });
     },
     onError: (e: any) => toast.error(e.message),
   });
+
 
   const reset = () => { setAnswers({}); setCurrent(0); setResult(null); };
 
