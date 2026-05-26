@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, ShoppingCart, Sparkles } from "lucide-react";
-import apostilaCover from "@/assets/apostila-cover.jpg";
 
 const benefits = [
   "Conteúdo direto ao ponto",
@@ -12,7 +11,7 @@ const benefits = [
 export function Apostila() {
   return (
     <section id="apostila" className="relative py-24 lg:py-32">
-      <div className="max-w-7xl mx-auto px-5 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
+      <div className="max-w-3xl mx-auto px-5 lg:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -30,7 +29,7 @@ export function Apostila() {
             Material objetivo, organizado e direcionado para quem deseja se preparar com foco no conteúdo de Informática cobrado no concurso de Agente Comunitário de Saúde da Prefeitura de Parnaíba.
           </p>
 
-          <ul className="mt-8 space-y-3">
+          <ul className="mt-8 space-y-3 max-w-xl mx-auto text-left">
             {benefits.map((b) => (
               <li key={b} className="flex items-start gap-3">
                 <CheckCircle2 size={20} className="text-accent shrink-0 mt-0.5" />
@@ -39,7 +38,7 @@ export function Apostila() {
             ))}
           </ul>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <a
               href="https://pay.kiwify.com.br/hDC71b0"
               target="_blank"
@@ -52,28 +51,6 @@ export function Apostila() {
             <div className="text-sm text-muted-foreground">
               <div className="text-xs uppercase tracking-wider">Investimento</div>
               <div className="text-foreground font-semibold">A partir de R$ 47,00</div>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, rotate: -3 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: -3 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="relative"
-        >
-          <div className="absolute -inset-10 bg-gradient-primary opacity-25 blur-3xl rounded-full" />
-          <div className="relative mx-auto max-w-sm">
-            <div className="bg-gradient-to-br from-card to-secondary border border-border rounded-3xl p-1 shadow-glow rotate-3">
-              <div className="rounded-[20px] overflow-hidden aspect-[4/5] relative">
-                <img
-                  src={apostilaCover}
-                  alt="Capa da Apostila Digital de Informática para ACS e ACE Parnaíba 2026"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
             </div>
           </div>
         </motion.div>
