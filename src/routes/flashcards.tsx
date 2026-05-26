@@ -211,7 +211,7 @@ function Page() {
               </div>
             ) : (
               <div className="mt-10 grid lg:grid-cols-[1fr_auto] gap-8 items-start">
-                <div className="relative mx-auto w-full max-w-xl">
+                <div className="relative mx-auto w-full max-w-md">
                   <div className="mb-3 flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1 text-muted-foreground"><Timer size={14} /> {timeLeft}s</span>
                     <span className="text-muted-foreground">{index + 1} / {list.length}</span>
