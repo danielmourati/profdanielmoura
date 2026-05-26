@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FlashcardsRouteImport } from './routes/flashcards'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -24,6 +25,11 @@ import { Route as AdminAssessmentsIdRouteImport } from './routes/admin.assessmen
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlashcardsRoute = FlashcardsRouteImport.update({
+  id: '/flashcards',
+  path: '/flashcards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -80,6 +86,7 @@ const AdminAssessmentsIdRoute = AdminAssessmentsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
   '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/flashcards'
     | '/login'
     | '/admin/assessments'
     | '/admin/attempts'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/flashcards'
     | '/login'
     | '/admin/assessments'
     | '/admin/attempts'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/flashcards'
     | '/login'
     | '/admin/assessments'
     | '/admin/attempts'
@@ -160,6 +172,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  FlashcardsRoute: typeof FlashcardsRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -170,6 +183,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flashcards': {
+      id: '/flashcards'
+      path: '/flashcards'
+      fullPath: '/flashcards'
+      preLoaderRoute: typeof FlashcardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -281,6 +301,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  FlashcardsRoute: FlashcardsRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
