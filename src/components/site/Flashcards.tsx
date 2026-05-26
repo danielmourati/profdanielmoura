@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Check, X, SkipForward, RotateCw } from "lucide-react";
+import { Brain, Check, X, SkipForward, RotateCw, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 type Card = { q: string; a: string };
 type Cat = { id: string; label: string; cards: Card[] };
