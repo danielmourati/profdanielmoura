@@ -34,7 +34,7 @@ export function CrudTable<T extends { id: string }>({
     queryFn: async () => {
       const { data, error } = await supabase.from(table as any).select("*").order(orderBy);
       if (error) throw error;
-      return data as T[];
+      return (data ?? []) as unknown as T[];
     },
   });
 
