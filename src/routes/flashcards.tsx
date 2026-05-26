@@ -265,18 +265,18 @@ function Page() {
                     </div>
                   </div>
 
-                  <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <button onClick={() => { setHits((h) => h + 1); next(); }} className="inline-flex items-center justify-center gap-2 bg-success/15 text-success border border-success/40 font-semibold py-3 rounded-full">
-                      <Check size={16} /> Acertei
+                  <div className="mt-4 grid grid-cols-4 gap-2">
+                    <button onClick={() => { setHits((h) => h + 1); next(); }} className="inline-flex items-center justify-center gap-1.5 bg-success/15 text-success border border-success/40 font-semibold py-2 text-sm rounded-full">
+                      <Check size={14} /> Acertei
                     </button>
-                    <button onClick={() => { setMiss((m) => m + 1); next(); }} className="inline-flex items-center justify-center gap-2 bg-destructive/15 text-destructive border border-destructive/40 font-semibold py-3 rounded-full">
-                      <X size={16} /> Errei
+                    <button onClick={() => { setMiss((m) => m + 1); next(); }} className="inline-flex items-center justify-center gap-1.5 bg-destructive/15 text-destructive border border-destructive/40 font-semibold py-2 text-sm rounded-full">
+                      <X size={14} /> Errei
                     </button>
-                    <button onClick={next} className="inline-flex items-center justify-center gap-2 bg-card border border-border text-muted-foreground font-semibold py-3 rounded-full">
-                      <SkipForward size={16} /> Pular
+                    <button onClick={next} className="inline-flex items-center justify-center gap-1.5 bg-card border border-border text-muted-foreground font-semibold py-2 text-sm rounded-full">
+                      <SkipForward size={14} /> Pular
                     </button>
-                    <button onClick={stop} className="inline-flex items-center justify-center gap-2 bg-destructive text-destructive-foreground font-semibold py-3 rounded-full">
-                      <Square size={16} /> Parar
+                    <button onClick={stop} className="inline-flex items-center justify-center gap-1.5 bg-destructive text-destructive-foreground font-semibold py-2 text-sm rounded-full">
+                      <Square size={14} /> Parar
                     </button>
                   </div>
                 </div>
