@@ -46,6 +46,7 @@ function Page() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const savedRef = useRef(false);
+  const [sessionKey, setSessionKey] = useState(0);
 
   const cats = useQuery({
     queryKey: ["fc_cats"],
