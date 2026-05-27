@@ -98,6 +98,7 @@ function Page() {
     setIndex(0); setHits(0); setMiss(0); setFlipped(false); setDone(false);
     startedAtRef.current = Date.now();
     savedRef.current = false;
+    setSessionKey((k) => k + 1);
     setPlaying(true);
   };
 
