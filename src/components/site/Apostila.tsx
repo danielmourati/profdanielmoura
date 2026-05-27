@@ -24,7 +24,7 @@ export function Apostila() {
           >
             <img
               src={apostilaCover}
-              alt="Mockup da apostila de Informática para o concurso ACS 2026"
+              alt="Mockup da apostila de Informática para o concurso ACS/ACE 2026"
               className="w-full max-w-xl lg:max-w-2xl xl:max-w-3xl"
               style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.55))" }}
             />
@@ -39,11 +39,11 @@ export function Apostila() {
             className="text-center lg:text-left"
           >
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/15 text-gold border border-gold/30 text-xs font-bold uppercase tracking-wider">
-              <Sparkles size={12} /> Lançamento ACS 2026
+              <Sparkles size={12} /> Lançamento ACS/ACE 2026
             </span>
             <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
               Apostila de Informática para o concurso da{" "}
-              <span className="text-gradient">Prefeitura de Parnaíba — ACS 2026</span>
+              <span className="text-gradient">Prefeitura de Parnaíba — ACS/ACE 2026</span>
             </h2>
             <p className="mt-5 text-lg text-muted-foreground">
               Material objetivo, organizado e direcionado para quem deseja se preparar com foco no conteúdo de Informática cobrado no concurso de Agente Comunitário de Saúde da Prefeitura de Parnaíba.
