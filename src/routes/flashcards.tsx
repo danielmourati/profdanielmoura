@@ -46,6 +46,7 @@ function Page() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const savedRef = useRef(false);
+  const [sessionKey, setSessionKey] = useState(0);
 
   const cats = useQuery({
     queryKey: ["fc_cats"],
@@ -56,13 +57,19 @@ function Page() {
   });
 
   const cards = useQuery({
-    queryKey: ["fc_cards", diff, catId],
+    queryKey: ["fc_cards", diff, catId, sessionKey],
     enabled: !!diff && catChosen && playing,
     queryFn: async () => {
-      let q = supabase.from("flashcards").select("*").eq("difficulty", diff as any).order("order_index");
+      let q = supabase.from("flashcards").select("*").eq("difficulty", diff as any);
       if (catId) q = q.eq("category_id", catId);
       const { data } = await q;
-      return data ?? [];
+      const arr = [...(data ?? [])];
+      // Fisher-Yates shuffle para ordem aleatória a cada sessão
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     },
   });
 
@@ -91,6 +98,7 @@ function Page() {
     setIndex(0); setHits(0); setMiss(0); setFlipped(false); setDone(false);
     startedAtRef.current = Date.now();
     savedRef.current = false;
+    setSessionKey((k) => k + 1);
     setPlaying(true);
   };
 
