@@ -5,7 +5,7 @@ import apostilaCover from "@/assets/apostila-cover.jpg";
 const benefits = [
   "Conteúdo direto ao ponto",
   "Linguagem simples e didática",
-  "Foco no concurso ACS Parnaíba",
+  "Foco no concurso ACS/ACE Parnaíba",
   "Ideal para revisão e preparação estratégica",
 ];
 
