@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Quote, Star } from "lucide-react";
 
 const items = [
-  { name: "Mariana S.", role: "Aprovada ACS", text: "Consegui entender Informática de um jeito simples. As aulas mudaram minha forma de estudar." },
+  { name: "Mariana S.", role: "Aprovada ACS/ACE", text: "Consegui entender Informática de um jeito simples. As aulas mudaram minha forma de estudar." },
   { name: "Rafael L.", role: "Concursando", text: "As aulas do Prof. Daniel foram decisivas na minha aprovação. Didática excelente." },
   { name: "Juliana P.", role: "Servidora", text: "Os materiais são objetivos e muito bem explicados. Recomendo para qualquer concurseiro." },
 ];
