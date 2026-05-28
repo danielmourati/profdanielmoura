@@ -111,7 +111,7 @@ export function Flashcards() {
           </p>
         </div>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-2">
+        <div className="mt-10 hidden flex-wrap justify-center gap-2">
           {DATA.map((c) => (
             <button
               key={c.id}
