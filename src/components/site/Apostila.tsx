@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, ShoppingCart, Sparkles } from "lucide-react";
-import apostilaCover from "@/assets/apostila-cover.jpg";
+import apostilaCover from "@/assets/apostila-tablet.png";
 
 const benefits = [
   "Conteúdo direto ao ponto",
