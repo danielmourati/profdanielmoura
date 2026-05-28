@@ -24,9 +24,9 @@ export function Apostila() {
           >
             <img
               src={apostilaCover}
-              alt="Mockup da apostila de Informática para o concurso ACS/ACE 2026"
+              alt="Mockup em tablet da apostila de Informática para o concurso ACS/ACE 2026"
               className="w-full max-w-xl lg:max-w-2xl xl:max-w-3xl"
-              style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.55))" }}
+              style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.45))" }}
             />
           </motion.div>
 
