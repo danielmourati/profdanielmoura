@@ -10,6 +10,14 @@ const files = [
     filename: "Excel-Intermediario-Aula-1.xlsx",
     size: "XLSX",
   },
+  {
+    icon: FileSpreadsheet,
+    title: "Excel Intermediário — Aula 2",
+    desc: "Material de apoio da aula 2 de Excel Intermediário. Arquivo .xlsx para download gratuito.",
+    href: "/downloads/Excel-Intermediario-Aula-2.xlsx",
+    filename: "Excel-Intermediario-Aula-2.xlsx",
+    size: "XLSX",
+  },
 ];
 
 export function Downloads() {
