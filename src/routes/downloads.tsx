@@ -20,13 +20,11 @@ function Page() {
   const { data = [], isLoading } = useQuery({
     queryKey: ["downloads_public"],
     queryFn: async () => {
-  const { data = [], isLoading } = useQuery({
-    queryKey: ["downloads_public"],
-    queryFn: async () => {
       const { data } = await supabase.from("downloads").select("*").order("order_index");
       return data ?? [];
     },
   });
+
 
   return (
     <main className="bg-background text-foreground min-h-screen">
