@@ -12,6 +12,7 @@ function P() {
       fields={[
         { name: "title", label: "Título", required: true },
         { name: "file_url", label: "Arquivo", type: "file", required: true, bucket: "downloads", fileNameField: "file_name" },
+        { name: "description", label: "Descrição", type: "textarea" },
         { name: "file_name", label: "Nome do arquivo", required: true },
         { name: "file_type", label: "Tipo (ex: PDF, XLSX)" },
         { name: "icon", label: "Ícone (lucide name)" },
