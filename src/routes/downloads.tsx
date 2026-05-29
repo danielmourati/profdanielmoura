@@ -42,7 +42,10 @@ function Page() {
           <p className="mt-4 text-muted-foreground">Baixe materiais complementares para potencializar seus estudos.</p>
         </div>
 
+        <div className="mt-12 grid md:grid-cols-2 gap-6">
+          {isLoading && <div className="col-span-full text-center text-muted-foreground">Carregando...</div>}
           {data.map((d: any) => {
+
             const Icon = iconFor(d.icon);
             const locked = !d.active;
             const cardClass = `relative bg-card border rounded-2xl p-6 transition-all flex items-start gap-4 ${
