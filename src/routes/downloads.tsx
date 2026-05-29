@@ -20,13 +20,14 @@ function Page() {
   const { data = [], isLoading } = useQuery({
     queryKey: ["downloads_public"],
     queryFn: async () => {
-      const { data } = await supabase.from("downloads").select("*").eq("active", true).order("order_index");
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["downloads_public"],
+    queryFn: async () => {
+      const { data } = await supabase.from("downloads").select("*").order("order_index");
       return data ?? [];
     },
   });
 
-  return (
-    <main className="bg-background text-foreground min-h-screen">
       <Nav />
       <section className="pt-32 pb-20 max-w-5xl mx-auto px-5 lg:px-8">
         <div className="text-center max-w-2xl mx-auto">
