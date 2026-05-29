@@ -28,7 +28,10 @@ function Page() {
     },
   });
 
+  return (
+    <main className="bg-background text-foreground min-h-screen">
       <Nav />
+
       <section className="pt-32 pb-20 max-w-5xl mx-auto px-5 lg:px-8">
         <div className="text-center max-w-2xl mx-auto">
           <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-bold uppercase tracking-wider">
