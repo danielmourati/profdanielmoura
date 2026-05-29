@@ -185,8 +185,6 @@ function CrudForm({
                   setValues(next);
                 }}
               />
-            </div>
-            ) : (
             ) : (
               <input
                 required={f.required}
