@@ -7,9 +7,11 @@ import { Pencil, Trash2, Plus } from "lucide-react";
 export type Field = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "url" | "select" | "checkbox";
+  type?: "text" | "textarea" | "number" | "url" | "select" | "checkbox" | "file";
   options?: { value: string; label: string }[];
   required?: boolean;
+  bucket?: string;
+  fileNameField?: string;
 };
 
 type Props<T extends { id: string }> = {
