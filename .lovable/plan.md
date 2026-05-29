@@ -1,70 +1,51 @@
+## Situação atual
+
+A infraestrutura de avaliação diagnóstica **já está pronta** no projeto:
+
+- Tabelas: `assessments`, `assessment_questions`, `score_bands`, `assessment_attempts`
+- RPC seguro `submit_assessment` (corrige no servidor, evita trapaça)
+- Rotas públicas: `/avaliacao` (lista) e `/avaliacao/$slug` (faz a prova com barra de progresso, resultado, faixa colorida)
+- Admin: `/admin/assessments` (CRUD) e `/admin/assessments/$id` (perguntas + faixas)
+- Histórico do usuário em `/minha-area`
+
+Ou seja, **não precisa codar nada novo** — só popular o conteúdo da avaliação "Noções de Informática".
+
 ## Plano
 
-### 1. Campo WhatsApp no cadastro
-- Adicionar coluna `phone` (text, nullable) na tabela `profiles` via migration.
-- Atualizar trigger `handle_new_user` para gravar `phone` de `raw_user_meta_data->>'phone'`.
-- Em `src/routes/login.tsx`: novo input de celular/WhatsApp (apenas no modo signup), com máscara simples `(99) 99999-9999` e validação. Passar em `options.data.phone` no `signUp`.
+### 1. Criar a avaliação via admin
+Em `/admin/assessments` cadastrar:
+- **Título:** Noções de Informática
+- **Slug:** `nocoes-informatica`
+- **Descrição:** curta, explicando o objetivo diagnóstico
+- **Ativa:** sim
 
-### 2. Área do usuário (`/minha-area`) expandida
-Reorganizar `src/routes/minha-area.tsx` em abas/seções:
-- **Perfil**: editar `display_name` e `phone` (update em `profiles`). Mostrar email (read-only) + botão "Alterar senha" (envia `resetPasswordForEmail`).
-- **Avaliações**: histórico de `assessment_attempts` (já existente) + gráfico de evolução.
-- **Flashcards**: nova seção mostrando sessões de flashcards realizadas.
-  - Requer nova tabela `flashcard_sessions` (user_id, category_id, level, total, correct, wrong, duration_seconds, created_at) com RLS por usuário.
-  - Salvar sessão ao final do teste em `src/routes/flashcards.tsx` (insert quando user logado).
+### 2. Definir as 4 faixas de resultado (score em %)
+Em `/admin/assessments/{id}`:
 
-### 3. Admin → Usuários (`/admin/users`)
-- Nova rota `src/routes/admin.users.tsx` ligada ao menu lateral em `src/routes/admin.tsx`.
-- Listagem de usuários consultando `profiles` + `user_roles` (join) + status de bloqueio.
-- Server functions (`createServerFn` + `supabaseAdmin` + middleware admin) para operações privilegiadas:
-  - `listUsers` — combina `profiles`, `auth.admin.listUsers()` (para email/banned_until/last_sign_in) e `user_roles`.
-  - `resetUserPassword({userId})` — usa `supabaseAdmin.auth.admin.generateLink({type:'recovery'})` e envia por email (ou retorna link).
-  - `toggleUserBlock({userId, block})` — `supabaseAdmin.auth.admin.updateUserById(userId, { ban_duration: block ? '876000h' : 'none' })`.
-  - `deleteUser({userId})` — `supabaseAdmin.auth.admin.deleteUser(userId)` (cascata remove profile/roles via FK ON DELETE).
-- Middleware `requireAdmin` que estende `requireSupabaseAuth` e verifica `has_role(userId,'admin')`.
-- UI da tabela com colunas: Nome, Email, WhatsApp, Papel, Status, Último acesso, Ações (Reset senha / Bloquear-Desbloquear / Excluir com confirmação).
+| Faixa | Label | Cor | Mensagem |
+|---|---|---|---|
+| 0–40% | Iniciante | vermelho | Recomendar curso básico + apostila |
+| 41–60% | Em desenvolvimento | amarelo | Recomendar flashcards + revisão |
+| 61–80% | Intermediário | azul | Sugerir avaliações específicas |
+| 81–100% | Avançado | verde | Parabéns + sugerir conteúdos avançados |
 
-### 4. Banco de dados (migrations)
-```sql
--- 1. Phone em profiles
-ALTER TABLE public.profiles ADD COLUMN phone text;
+### 3. Cadastrar as 20 questões
+Cobrindo tópicos clássicos de concurso: hardware, software, Windows, Word, Excel, navegadores, e-mail, segurança, redes, atalhos. 4 alternativas (a–d), uma correta.
 
--- 2. Atualizar handle_new_user para incluir phone
--- (recriar função)
+> Posso gerar as 20 questões prontas (enunciado + alternativas + gabarito) e inserir tudo de uma vez via migração SQL para não ter que digitar uma a uma no admin. Confirme se quer assim.
 
--- 3. Tabela flashcard_sessions
-CREATE TABLE public.flashcard_sessions (
-  id uuid PK default gen_random_uuid(),
-  user_id uuid not null,
-  category_id uuid,
-  category_name text,
-  level text,
-  total int not null,
-  correct int not null,
-  wrong int not null,
-  duration_seconds int,
-  created_at timestamptz default now()
-);
-GRANT SELECT, INSERT ON public.flashcard_sessions TO authenticated;
-GRANT ALL ON public.flashcard_sessions TO service_role;
-ALTER TABLE ... ENABLE ROW LEVEL SECURITY;
--- Policies: user vê/insere os próprios; admin vê todos.
+### 4. Link de acesso na home
+Adicionar um destaque/CTA na home (`src/routes/index.tsx`) apontando para `/avaliacao/nocoes-informatica` para o visitante encontrar a avaliação.
 
--- 4. FKs com ON DELETE CASCADE em profiles.id → auth.users(id) e user_roles.user_id → auth.users(id) (se ainda não existir) para que delete user remova dados.
-```
+## Detalhes técnicos
 
-### 5. Arquivos a criar/alterar
-- **migration** (campos profiles + tabela flashcard_sessions + trigger).
-- `src/routes/login.tsx` — input phone.
-- `src/routes/minha-area.tsx` — abas Perfil / Avaliações / Flashcards.
-- `src/routes/flashcards.tsx` — gravar sessão ao final.
-- `src/lib/admin-users.functions.ts` — server fns admin.
-- `src/routes/admin.users.tsx` — UI de gestão.
-- `src/routes/admin.tsx` — adicionar item "Usuários" no menu.
+- O componente `/avaliacao/$slug` lê `assessment_questions_public` (view sem `correct_option_id`) — gabarito nunca vai pro cliente.
+- A correção e gravação da tentativa acontecem no RPC `submit_assessment` (SECURITY DEFINER) — já alinhado com a memória do projeto.
+- Resultado mostra score %, acertos/total e a faixa correspondente automaticamente.
+- Usuário precisa estar logado (já tratado pelo `AuthGate`) — assim a tentativa fica salva no histórico.
 
-### Perguntas antes de implementar
-1. **Bloqueio**: usar "ban" do Supabase (sem login até desbloqueio) ou apenas flag visual? → Plano usa ban nativo.
-2. **Reset de senha** pelo admin: enviar email automaticamente ao usuário, ou copiar link para o admin compartilhar? → Plano sugere envio por email (`resetPasswordForEmail`).
-3. **WhatsApp obrigatório** no signup, ou opcional? → Plano sugere opcional.
+## O que decidir antes de implementar
 
-Se concordar com essas decisões, posso seguir para implementação.
+1. **Faixas e mensagens:** confirma as 4 acima ou prefere outras (ex.: 3 faixas, mensagens com link direto pra produtos)?
+2. **Questões:** quer que eu gere as 20 questões e insira via SQL, ou prefere cadastrar manualmente pelo admin?
+3. **CTA na home:** adiciono um bloco/botão "Faça o diagnóstico gratuito" ou deixo só acessível via `/avaliacao`?
