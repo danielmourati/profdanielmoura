@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Download as DownloadIcon, FileText, FileSpreadsheet, File } from "lucide-react";
+import { Download as DownloadIcon, FileText, FileSpreadsheet, File, Lock } from "lucide-react";
+
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
