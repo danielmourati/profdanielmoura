@@ -11,8 +11,7 @@ function P() {
       description="Arquivos disponíveis na página /downloads."
       fields={[
         { name: "title", label: "Título", required: true },
-        { name: "file_url", label: "Arquivo (upload)", type: "file", required: true, bucket: "downloads", fileNameField: "file_name" },
-        { name: "file_url", label: "URL do arquivo", type: "url", required: true },
+        { name: "file_url", label: "Arquivo", type: "file", required: true, bucket: "downloads", fileNameField: "file_name" },
         { name: "file_name", label: "Nome do arquivo", required: true },
         { name: "file_type", label: "Tipo (ex: PDF, XLSX)" },
         { name: "icon", label: "Ícone (lucide name)" },
