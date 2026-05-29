@@ -87,9 +87,6 @@ function Page() {
               </a>
             );
           })}
-
-            );
-          })}
           {!isLoading && data.length === 0 && <div className="col-span-full text-center text-muted-foreground">Nenhum arquivo disponível.</div>}
         </div>
       </section>
