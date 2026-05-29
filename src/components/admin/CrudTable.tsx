@@ -206,3 +206,57 @@ function CrudForm({
     </form>
   );
 }
+
+function FileUploadInput({
+  field,
+  value,
+  onUploaded,
+}: {
+  field: Field;
+  value: string;
+  onUploaded: (url: string, filename: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const bucket = field.bucket ?? "downloads";
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `${Date.now()}-${safe}`;
+      const { error } = await supabase.storage.from(bucket).upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: file.type || undefined,
+      });
+      if (error) throw error;
+      const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+      onUploaded(data.publicUrl, file.name);
+      toast.success("Arquivo enviado");
+    } catch (err: any) {
+      toast.error(err.message ?? "Falha no upload");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  return (
+    <div className="mt-1 space-y-2">
+      <input
+        type="file"
+        onChange={handleFile}
+        disabled={uploading}
+        className="block w-full text-sm text-muted-foreground file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-primary file:text-primary-foreground file:font-semibold file:cursor-pointer disabled:opacity-60"
+      />
+      {uploading && <p className="text-xs text-muted-foreground">Enviando...</p>}
+      {value && !uploading && (
+        <a href={value} target="_blank" rel="noreferrer" className="text-xs text-primary underline break-all">
+          {value}
+        </a>
+      )}
+    </div>
+  );
+}
