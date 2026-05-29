@@ -175,6 +175,18 @@ function CrudForm({
                   onChange={(e) => setValues({ ...values, [f.name]: e.target.checked })}
                 />
               </div>
+            ) : f.type === "file" ? (
+              <FileUploadInput
+                field={f}
+                value={values[f.name] ?? ""}
+                onUploaded={(url, filename) => {
+                  const next: any = { ...values, [f.name]: url };
+                  if (f.fileNameField && filename) next[f.fileNameField] = filename;
+                  setValues(next);
+                }}
+              />
+            </div>
+            ) : (
             ) : (
               <input
                 required={f.required}
