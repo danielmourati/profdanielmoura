@@ -42,20 +42,22 @@ function Page() {
           <p className="mt-4 text-muted-foreground">Baixe materiais complementares para potencializar seus estudos.</p>
         </div>
 
-        <div className="mt-12 grid md:grid-cols-2 gap-6">
-          {isLoading && <div className="col-span-full text-center text-muted-foreground">Carregando...</div>}
           {data.map((d: any) => {
             const Icon = iconFor(d.icon);
-            return (
-              <a
-                key={d.id}
-                href={d.file_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                download={d.file_name}
-                className="bg-card border border-border rounded-2xl p-6 hover:border-primary/40 hover:shadow-glow transition-all flex items-start gap-4"
-              >
-                <div className="size-12 grid place-items-center rounded-xl bg-primary/10 text-primary shrink-0">
+            const locked = !d.active;
+            const cardClass = `relative bg-card border rounded-2xl p-6 transition-all flex items-start gap-4 ${
+              locked
+                ? "border-border/60 opacity-70 cursor-not-allowed"
+                : "border-border hover:border-primary/40 hover:shadow-glow"
+            }`;
+            const content = (
+              <>
+                {locked && (
+                  <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-destructive/15 border border-destructive/30 text-destructive text-[10px] font-bold uppercase tracking-wider">
+                    <Lock size={10} /> Bloqueado
+                  </span>
+                )}
+                <div className={`size-12 grid place-items-center rounded-xl shrink-0 ${locked ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>
                   <Icon size={24} />
                 </div>
                 <div className="flex-1">
@@ -64,11 +66,28 @@ function Page() {
                   </div>
                   <h3 className="mt-1 font-display font-bold text-lg">{d.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{d.description}</p>
-                  <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary">
-                    <DownloadIcon size={14} /> Baixar
+                  <div className={`mt-3 inline-flex items-center gap-1 text-sm font-semibold ${locked ? "text-muted-foreground" : "text-primary"}`}>
+                    {locked ? (<><Lock size={14} /> Indisponível</>) : (<><DownloadIcon size={14} /> Baixar</>)}
                   </div>
                 </div>
+              </>
+            );
+            return locked ? (
+              <div key={d.id} className={cardClass} aria-disabled="true">{content}</div>
+            ) : (
+              <a
+                key={d.id}
+                href={d.file_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                download={d.file_name}
+                className={cardClass}
+              >
+                {content}
               </a>
+            );
+          })}
+
             );
           })}
           {!isLoading && data.length === 0 && <div className="col-span-full text-center text-muted-foreground">Nenhum arquivo disponível.</div>}
