@@ -13,6 +13,7 @@ import { Route as MinhaAreaRouteImport } from './routes/minha-area'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FlashcardsRouteImport } from './routes/flashcards'
 import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as BancoDeQuestoesRouteImport } from './routes/banco-de-questoes'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AvaliacaoIndexRouteImport } from './routes/avaliacao.index'
@@ -20,6 +21,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AvaliacaoSlugRouteImport } from './routes/avaliacao.$slug'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
+import { Route as AdminQuestionsRouteImport } from './routes/admin.questions'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
 import { Route as AdminDownloadsRouteImport } from './routes/admin.downloads'
@@ -45,6 +47,11 @@ const FlashcardsRoute = FlashcardsRouteImport.update({
 const DownloadsRoute = DownloadsRouteImport.update({
   id: '/downloads',
   path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BancoDeQuestoesRoute = BancoDeQuestoesRouteImport.update({
+  id: '/banco-de-questoes',
+  path: '/banco-de-questoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -82,6 +89,11 @@ const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   path: '/testimonials',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminQuestionsRoute = AdminQuestionsRouteImport.update({
+  id: '/questions',
+  path: '/questions',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -116,6 +128,7 @@ const AdminAssessmentsIdRoute = AdminAssessmentsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/banco-de-questoes': typeof BancoDeQuestoesRoute
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
@@ -125,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/questions': typeof AdminQuestionsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
@@ -134,6 +148,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/banco-de-questoes': typeof BancoDeQuestoesRoute
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
@@ -143,6 +158,7 @@ export interface FileRoutesByTo {
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/questions': typeof AdminQuestionsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
@@ -154,6 +170,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/banco-de-questoes': typeof BancoDeQuestoesRoute
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
@@ -163,6 +180,7 @@ export interface FileRoutesById {
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/questions': typeof AdminQuestionsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
@@ -175,6 +193,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/banco-de-questoes'
     | '/downloads'
     | '/flashcards'
     | '/login'
@@ -184,6 +203,7 @@ export interface FileRouteTypes {
     | '/admin/downloads'
     | '/admin/flashcards'
     | '/admin/products'
+    | '/admin/questions'
     | '/admin/testimonials'
     | '/admin/users'
     | '/avaliacao/$slug'
@@ -193,6 +213,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/banco-de-questoes'
     | '/downloads'
     | '/flashcards'
     | '/login'
@@ -202,6 +223,7 @@ export interface FileRouteTypes {
     | '/admin/downloads'
     | '/admin/flashcards'
     | '/admin/products'
+    | '/admin/questions'
     | '/admin/testimonials'
     | '/admin/users'
     | '/avaliacao/$slug'
@@ -212,6 +234,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/banco-de-questoes'
     | '/downloads'
     | '/flashcards'
     | '/login'
@@ -221,6 +244,7 @@ export interface FileRouteTypes {
     | '/admin/downloads'
     | '/admin/flashcards'
     | '/admin/products'
+    | '/admin/questions'
     | '/admin/testimonials'
     | '/admin/users'
     | '/avaliacao/$slug'
@@ -232,6 +256,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  BancoDeQuestoesRoute: typeof BancoDeQuestoesRoute
   DownloadsRoute: typeof DownloadsRoute
   FlashcardsRoute: typeof FlashcardsRoute
   LoginRoute: typeof LoginRoute
@@ -268,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/downloads'
       fullPath: '/downloads'
       preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/banco-de-questoes': {
+      id: '/banco-de-questoes'
+      path: '/banco-de-questoes'
+      fullPath: '/banco-de-questoes'
+      preLoaderRoute: typeof BancoDeQuestoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -317,6 +349,13 @@ declare module '@tanstack/react-router' {
       path: '/testimonials'
       fullPath: '/admin/testimonials'
       preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/questions': {
+      id: '/admin/questions'
+      path: '/questions'
+      fullPath: '/admin/questions'
+      preLoaderRoute: typeof AdminQuestionsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/products': {
@@ -381,6 +420,7 @@ interface AdminRouteChildren {
   AdminDownloadsRoute: typeof AdminDownloadsRoute
   AdminFlashcardsRoute: typeof AdminFlashcardsRoute
   AdminProductsRoute: typeof AdminProductsRoute
+  AdminQuestionsRoute: typeof AdminQuestionsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -392,6 +432,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminDownloadsRoute: AdminDownloadsRoute,
   AdminFlashcardsRoute: AdminFlashcardsRoute,
   AdminProductsRoute: AdminProductsRoute,
+  AdminQuestionsRoute: AdminQuestionsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -402,6 +443,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  BancoDeQuestoesRoute: BancoDeQuestoesRoute,
   DownloadsRoute: DownloadsRoute,
   FlashcardsRoute: FlashcardsRoute,
   LoginRoute: LoginRoute,

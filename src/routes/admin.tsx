@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { LayoutDashboard, BookOpen, Package, Download, MessageSquare, ClipboardList, History, LogOut, Users } from "lucide-react";
+import { LayoutDashboard, BookOpen, Package, Download, MessageSquare, ClipboardList, History, LogOut, Users, FileQuestion } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -14,6 +14,7 @@ const items = [
   { to: "/admin/downloads", label: "Downloads", icon: Download },
   { to: "/admin/testimonials", label: "Depoimentos", icon: MessageSquare },
   { to: "/admin/assessments", label: "Avaliações", icon: ClipboardList },
+  { to: "/admin/questions", label: "Banco de Questões", icon: FileQuestion },
   { to: "/admin/attempts", label: "Histórico", icon: History },
   { to: "/admin/users", label: "Usuários", icon: Users },
 ];

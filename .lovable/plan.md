@@ -1,51 +1,83 @@
-## Situação atual
+# Banco de Questões com Filtros, Resolução e Diagnóstico
 
-A infraestrutura de avaliação diagnóstica **já está pronta** no projeto:
+## Contexto
 
-- Tabelas: `assessments`, `assessment_questions`, `score_bands`, `assessment_attempts`
-- RPC seguro `submit_assessment` (corrige no servidor, evita trapaça)
-- Rotas públicas: `/avaliacao` (lista) e `/avaliacao/$slug` (faz a prova com barra de progresso, resultado, faixa colorida)
-- Admin: `/admin/assessments` (CRUD) e `/admin/assessments/$id` (perguntas + faixas)
-- Histórico do usuário em `/minha-area`
+Hoje `/admin/assessments` gerencia "avaliações diagnósticas" (provas com slug fixo, 20 questões, score_bands). O pedido novo é diferente: um **banco de questões** estilo QConcursos, com muitos metadados (disciplina, órgão, ano, banca, cargo, etc.), filtros para o aluno e diagnóstico automático no fim de uma sessão.
 
-Ou seja, **não precisa codar nada novo** — só popular o conteúdo da avaliação "Noções de Informática".
+São dois domínios distintos. Em vez de poluir as tabelas existentes, vou criar um sistema novo paralelo: `/admin/questions` (admin) e `/banco-de-questoes` (aluno). As avaliações com slug continuam intactas.
 
-## Plano
+## 1. Banco de dados (migração)
 
-### 1. Criar a avaliação via admin
-Em `/admin/assessments` cadastrar:
-- **Título:** Noções de Informática
-- **Slug:** `nocoes-informatica`
-- **Descrição:** curta, explicando o objetivo diagnóstico
-- **Ativa:** sim
+Tabelas novas:
 
-### 2. Definir as 4 faixas de resultado (score em %)
-Em `/admin/assessments/{id}`:
+**`questions`** — banco principal
+- `statement` (texto), `comment` (explicativo)
+- `option_a, option_b, option_c, option_d` (text NOT NULL), `option_e` (text NULL)
+- `correct_option` (char, 'a'..'e')
+- `discipline, subject, area, exam, organization, city, role, education, banca` (text)
+- `year` (int), `difficulty` (enum: facil | medio | dificil)
+- `active` (bool, default true)
+- timestamps
 
-| Faixa | Label | Cor | Mensagem |
-|---|---|---|---|
-| 0–40% | Iniciante | vermelho | Recomendar curso básico + apostila |
-| 41–60% | Em desenvolvimento | amarelo | Recomendar flashcards + revisão |
-| 61–80% | Intermediário | azul | Sugerir avaliações específicas |
-| 81–100% | Avançado | verde | Parabéns + sugerir conteúdos avançados |
+**`question_attempts`** — uma linha por questão respondida pelo aluno
+- `user_id`, `question_id`, `picked_option` (char), `is_correct` (bool)
+- `discipline, subject, difficulty` (denormalizados pra agregação rápida)
+- `session_id` (uuid — agrupa as questões de uma sessão de estudo)
+- `created_at`
 
-### 3. Cadastrar as 20 questões
-Cobrindo tópicos clássicos de concurso: hardware, software, Windows, Word, Excel, navegadores, e-mail, segurança, redes, atalhos. 4 alternativas (a–d), uma correta.
+RLS:
+- `questions`: leitura pública (anon+auth), escrita só admin
+- `question_attempts`: insert/select próprio (auth.uid), admin vê tudo
 
-> Posso gerar as 20 questões prontas (enunciado + alternativas + gabarito) e inserir tudo de uma vez via migração SQL para não ter que digitar uma a uma no admin. Confirme se quer assim.
+Índices em `discipline`, `subject`, `area`, `organization`, `year`, `difficulty`, `active` pra filtros rápidos.
 
-### 4. Link de acesso na home
-Adicionar um destaque/CTA na home (`src/routes/index.tsx`) apontando para `/avaliacao/nocoes-informatica` para o visitante encontrar a avaliação.
+GRANTs explícitos em ambas (anon select em questions; authenticated CRUD em attempts; service_role tudo).
 
-## Detalhes técnicos
+## 2. Admin — `/admin/questions`
 
-- O componente `/avaliacao/$slug` lê `assessment_questions_public` (view sem `correct_option_id`) — gabarito nunca vai pro cliente.
-- A correção e gravação da tentativa acontecem no RPC `submit_assessment` (SECURITY DEFINER) — já alinhado com a memória do projeto.
-- Resultado mostra score %, acertos/total e a faixa correspondente automaticamente.
-- Usuário precisa estar logado (já tratado pelo `AuthGate`) — assim a tentativa fica salva no histórico.
+Nova rota usando o `CrudTable` existente, com todos os campos do enunciado. Campos longos (statement, comment, alternativas) como textarea; difficulty/correct_option/active como select/checkbox; year como number.
 
-## O que decidir antes de implementar
+Link no `/admin/index.tsx` ("Banco de Questões").
 
-1. **Faixas e mensagens:** confirma as 4 acima ou prefere outras (ex.: 3 faixas, mensagens com link direto pra produtos)?
-2. **Questões:** quer que eu gere as 20 questões e insira via SQL, ou prefere cadastrar manualmente pelo admin?
-3. **CTA na home:** adiciono um bloco/botão "Faça o diagnóstico gratuito" ou deixo só acessível via `/avaliacao`?
+## 3. Aluno — `/banco-de-questoes`
+
+Rota nova com `AuthGate`. Layout:
+
+**Topo — filtros** (sidebar à esquerda em desktop, collapsible em mobile):
+- Campo de pesquisa (busca em statement)
+- Selects: disciplina, assunto, área, certame, órgão, cidade, cargo, ano, escolaridade, dificuldade
+- Opções dos selects vêm de `distinct` no banco (uma query agregada inicial)
+- Botão "Iniciar sessão" → busca questões filtradas, gera `session_id` (uuid), entra no modo resolução
+
+**Modo resolução** (card único por vez, navegação prev/next):
+- Mostra enunciado + alternativas clicáveis (A–E)
+- Ao clicar: chama RPC `answer_question(question_id, session_id, picked)` → insere em `question_attempts`, retorna `is_correct + correct_option + comment`
+- Mostra feedback: ✓/✗, gabarito destacado, bloco de comentário
+- Botão "Próxima"
+- Botão "Encerrar sessão" → vai pra tela de diagnóstico
+
+**Diagnóstico final** (mesma rota, após encerrar):
+- Lê `question_attempts WHERE session_id = X`
+- Calcula: total, acertos, erros, % aproveitamento
+- Agrupa por discipline, subject, difficulty (% cada)
+- Mostra mensagem do diagnóstico 1/2/3 conforme % global
+- CTA: "Ver cursos recomendados" → `/#produtos`
+
+## 4. RPC `answer_question` (SECURITY DEFINER)
+
+Evita que o cliente veja `correct_option` antes de responder. Recebe `(question_id, session_id, picked_option)`, lê a questão, calcula `is_correct`, insere em `question_attempts` com `user_id = auth.uid()`, retorna `{ is_correct, correct_option, comment }`. Sem isso, teríamos que expor o gabarito no select público — má prática (segue mesmo padrão de `submit_assessment` já usado no projeto).
+
+Também crio uma view `questions_public` (sem `correct_option` nem `comment`) pro listing/resolução do aluno.
+
+## 5. Detalhes técnicos
+
+- Diagnóstico calculado client-side a partir dos attempts da sessão (simples).
+- Filtros: query com `.ilike` no statement + `.eq` nos demais; só aplicar filtros não-vazios.
+- Mensagens dos 3 diagnósticos vão hardcoded no componente (são fixas no enunciado).
+- Não mexo no fluxo de `assessments` existente — esse continua sendo a "avaliação diagnóstica de Noções de Informática".
+
+## Fora do escopo
+
+- Cursos recomendados dinâmicos (uso os `products` já existentes, com link genérico)
+- Importação em lote de questões (admin cadastra uma por vez via UI)
+- Histórico de sessões anteriores na `/minha-area` (posso adicionar depois se quiser)
