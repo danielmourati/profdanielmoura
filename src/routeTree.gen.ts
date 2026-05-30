@@ -13,6 +13,7 @@ import { Route as MinhaAreaRouteImport } from './routes/minha-area'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FlashcardsRouteImport } from './routes/flashcards'
 import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as BancoDeQuestoesRouteImport } from './routes/banco-de-questoes'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AvaliacaoIndexRouteImport } from './routes/avaliacao.index'
@@ -46,6 +47,11 @@ const FlashcardsRoute = FlashcardsRouteImport.update({
 const DownloadsRoute = DownloadsRouteImport.update({
   id: '/downloads',
   path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BancoDeQuestoesRoute = BancoDeQuestoesRouteImport.update({
+  id: '/banco-de-questoes',
+  path: '/banco-de-questoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -122,6 +128,7 @@ const AdminAssessmentsIdRoute = AdminAssessmentsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/banco-de-questoes': typeof BancoDeQuestoesRoute
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/banco-de-questoes': typeof BancoDeQuestoesRoute
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/banco-de-questoes': typeof BancoDeQuestoesRoute
   '/downloads': typeof DownloadsRoute
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/banco-de-questoes'
     | '/downloads'
     | '/flashcards'
     | '/login'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/banco-de-questoes'
     | '/downloads'
     | '/flashcards'
     | '/login'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/banco-de-questoes'
     | '/downloads'
     | '/flashcards'
     | '/login'
@@ -244,6 +256,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  BancoDeQuestoesRoute: typeof BancoDeQuestoesRoute
   DownloadsRoute: typeof DownloadsRoute
   FlashcardsRoute: typeof FlashcardsRoute
   LoginRoute: typeof LoginRoute
@@ -280,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/downloads'
       fullPath: '/downloads'
       preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/banco-de-questoes': {
+      id: '/banco-de-questoes'
+      path: '/banco-de-questoes'
+      fullPath: '/banco-de-questoes'
+      preLoaderRoute: typeof BancoDeQuestoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -423,6 +443,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  BancoDeQuestoesRoute: BancoDeQuestoesRoute,
   DownloadsRoute: DownloadsRoute,
   FlashcardsRoute: FlashcardsRoute,
   LoginRoute: LoginRoute,
@@ -433,3 +454,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
