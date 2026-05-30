@@ -81,7 +81,7 @@ function Page() {
       if (filters.year) query = query.eq("year", Number(filters.year));
       const { data, error } = await query;
       if (error) throw error;
-      const qs = (data ?? []) as Q[];
+      const qs = ((data ?? []) as unknown) as Q[];
       if (qs.length === 0) throw new Error("Nenhuma questão encontrada com esses filtros.");
       // embaralha
       qs.sort(() => Math.random() - 0.5);
