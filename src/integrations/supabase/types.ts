@@ -353,6 +353,123 @@ export type Database = {
         }
         Relationships: []
       }
+      question_attempts: {
+        Row: {
+          created_at: string
+          difficulty: Database["public"]["Enums"]["question_difficulty"]
+          discipline: string
+          id: string
+          is_correct: boolean
+          picked_option: string
+          question_id: string
+          session_id: string
+          subject: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["question_difficulty"]
+          discipline?: string
+          id?: string
+          is_correct: boolean
+          picked_option: string
+          question_id: string
+          session_id: string
+          subject?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["question_difficulty"]
+          discipline?: string
+          id?: string
+          is_correct?: boolean
+          picked_option?: string
+          question_id?: string
+          session_id?: string
+          subject?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          active: boolean
+          area: string
+          banca: string | null
+          city: string
+          comment: string
+          correct_option: string
+          created_at: string
+          difficulty: Database["public"]["Enums"]["question_difficulty"]
+          discipline: string
+          education: string
+          exam: string
+          id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          option_e: string | null
+          organization: string
+          role: string
+          statement: string
+          subject: string
+          updated_at: string
+          year: number | null
+        }
+        Insert: {
+          active?: boolean
+          area?: string
+          banca?: string | null
+          city?: string
+          comment?: string
+          correct_option: string
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["question_difficulty"]
+          discipline?: string
+          education?: string
+          exam?: string
+          id?: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          option_e?: string | null
+          organization?: string
+          role?: string
+          statement: string
+          subject?: string
+          updated_at?: string
+          year?: number | null
+        }
+        Update: {
+          active?: boolean
+          area?: string
+          banca?: string | null
+          city?: string
+          comment?: string
+          correct_option?: string
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["question_difficulty"]
+          discipline?: string
+          education?: string
+          exam?: string
+          id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          option_e?: string | null
+          organization?: string
+          role?: string
+          statement?: string
+          subject?: string
+          updated_at?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
       score_bands: {
         Row: {
           assessment_id: string
@@ -497,8 +614,78 @@ export type Database = {
           },
         ]
       }
+      questions_public: {
+        Row: {
+          active: boolean | null
+          area: string | null
+          banca: string | null
+          city: string | null
+          difficulty: Database["public"]["Enums"]["question_difficulty"] | null
+          discipline: string | null
+          education: string | null
+          exam: string | null
+          id: string | null
+          option_a: string | null
+          option_b: string | null
+          option_c: string | null
+          option_d: string | null
+          option_e: string | null
+          organization: string | null
+          role: string | null
+          statement: string | null
+          subject: string | null
+          year: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          area?: string | null
+          banca?: string | null
+          city?: string | null
+          difficulty?: Database["public"]["Enums"]["question_difficulty"] | null
+          discipline?: string | null
+          education?: string | null
+          exam?: string | null
+          id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          option_e?: string | null
+          organization?: string | null
+          role?: string | null
+          statement?: string | null
+          subject?: string | null
+          year?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          area?: string | null
+          banca?: string | null
+          city?: string | null
+          difficulty?: Database["public"]["Enums"]["question_difficulty"] | null
+          discipline?: string | null
+          education?: string | null
+          exam?: string | null
+          id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          option_e?: string | null
+          organization?: string | null
+          role?: string | null
+          statement?: string | null
+          subject?: string | null
+          year?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      answer_question: {
+        Args: { p_picked: string; p_question_id: string; p_session_id: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -514,6 +701,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user"
       flashcard_difficulty: "facil" | "medio" | "dificil"
+      question_difficulty: "facil" | "medio" | "dificil"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -643,6 +831,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       flashcard_difficulty: ["facil", "medio", "dificil"],
+      question_difficulty: ["facil", "medio", "dificil"],
     },
   },
 } as const
