@@ -7,6 +7,7 @@ function P() {
   return (
     <CrudTable
       table="assessments"
+      orderBy="created_at"
       title="Avaliações Diagnósticas"
       description="Cadastre avaliações. Clique em editar para gerenciar perguntas e faixas de score."
       fields={[
