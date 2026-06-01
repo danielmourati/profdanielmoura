@@ -686,6 +686,18 @@ export type Database = {
         Args: { p_picked: string; p_question_id: string; p_session_id: string }
         Returns: Json
       }
+      get_assessment_public_questions: {
+        Args: { p_assessment_id: string }
+        Returns: {
+          assessment_id: string
+          created_at: string
+          id: string
+          options: Json
+          order_index: number
+          question: string
+          updated_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
