@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { ChevronRight, RotateCw, Trophy } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
@@ -7,6 +8,7 @@ import { Footer } from "@/components/site/Footer";
 import { AuthGate } from "@/components/site/AuthGate";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
+import { getPublicAssessmentBySlug } from "@/lib/assessments.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/avaliacao/$slug")({
@@ -27,21 +29,14 @@ type Option = { id: string; text: string };
 function Page() {
   const { slug } = Route.useParams();
   const { user } = useAuth();
+  const fetchAssessment = useServerFn(getPublicAssessmentBySlug);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [current, setCurrent] = useState(0);
   const [result, setResult] = useState<{ score: number; correct: number; total: number; band: any } | null>(null);
 
   const assessment = useQuery({
     queryKey: ["assessment_slug", slug],
-    queryFn: async () => {
-      const { data: a } = await supabase.from("assessments").select("*").eq("slug", slug).eq("active", true).maybeSingle();
-      if (!a) return null;
-      const [{ data: questions }, { data: bands }] = await Promise.all([
-        supabase.from("assessment_questions_public" as any).select("*").eq("assessment_id", a.id).order("order_index"),
-        supabase.from("score_bands").select("*").eq("assessment_id", a.id).order("min_score"),
-      ]);
-      return { ...a, questions: questions ?? [], bands: bands ?? [] };
-    },
+    queryFn: () => fetchAssessment({ data: { slug } }),
   });
 
   const submit = useMutation({
@@ -67,6 +62,7 @@ function Page() {
   const reset = () => { setAnswers({}); setCurrent(0); setResult(null); };
 
   if (assessment.isLoading) return <Shell><div className="text-center">Carregando...</div></Shell>;
+  if (assessment.isError) return <Shell><div className="text-center text-destructive">Não foi possível carregar as perguntas: {(assessment.error as Error).message}</div></Shell>;
   if (!assessment.data) return <Shell><div className="text-center">Avaliação não encontrada.</div></Shell>;
 
   const a = assessment.data;
