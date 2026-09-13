@@ -19,13 +19,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AvaliacaoIndexRouteImport } from './routes/avaliacao.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AvaliacaoSlugRouteImport } from './routes/avaliacao.$slug'
-import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
 import { Route as AdminQuestionsRouteImport } from './routes/admin.questions'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
 import { Route as AdminDownloadsRouteImport } from './routes/admin.downloads'
 import { Route as AdminAttemptsRouteImport } from './routes/admin.attempts'
+import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as AdminAssessmentsIndexRouteImport } from './routes/admin.assessments.index'
 import { Route as AdminUsersIdRouteImport } from './routes/admin.users.$id'
 import { Route as AdminAssessmentsIdRouteImport } from './routes/admin.assessments.$id'
@@ -80,11 +80,6 @@ const AvaliacaoSlugRoute = AvaliacaoSlugRouteImport.update({
   path: '/avaliacao/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -115,15 +110,20 @@ const AdminAttemptsRoute = AdminAttemptsRouteImport.update({
   path: '/attempts',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAssessmentsIndexRoute = AdminAssessmentsIndexRouteImport.update({
   id: '/assessments/',
   path: '/assessments/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminUsersRoute,
+  id: '/users/$id',
+  path: '/users/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminAssessmentsIdRoute = AdminAssessmentsIdRouteImport.update({
   id: '/assessments/$id',
@@ -145,13 +145,13 @@ export interface FileRoutesByFullPath {
   '/admin/products': typeof AdminProductsRoute
   '/admin/questions': typeof AdminQuestionsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
-  '/admin/users': typeof AdminUsersRouteWithChildren
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/avaliacao/': typeof AvaliacaoIndexRoute
   '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/assessments/': typeof AdminAssessmentsIndexRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,13 +166,13 @@ export interface FileRoutesByTo {
   '/admin/products': typeof AdminProductsRoute
   '/admin/questions': typeof AdminQuestionsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
-  '/admin/users': typeof AdminUsersRouteWithChildren
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
   '/admin': typeof AdminIndexRoute
   '/avaliacao': typeof AvaliacaoIndexRoute
   '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/assessments': typeof AdminAssessmentsIndexRoute
+  '/admin/users': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -189,13 +189,13 @@ export interface FileRoutesById {
   '/admin/products': typeof AdminProductsRoute
   '/admin/questions': typeof AdminQuestionsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
-  '/admin/users': typeof AdminUsersRouteWithChildren
   '/avaliacao/$slug': typeof AvaliacaoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/avaliacao/': typeof AvaliacaoIndexRoute
   '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/admin/assessments/': typeof AdminAssessmentsIndexRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -213,13 +213,13 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/questions'
     | '/admin/testimonials'
-    | '/admin/users'
     | '/avaliacao/$slug'
     | '/admin/'
     | '/avaliacao/'
     | '/admin/assessments/$id'
     | '/admin/users/$id'
     | '/admin/assessments/'
+    | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -234,13 +234,13 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/questions'
     | '/admin/testimonials'
-    | '/admin/users'
     | '/avaliacao/$slug'
     | '/admin'
     | '/avaliacao'
     | '/admin/assessments/$id'
     | '/admin/users/$id'
     | '/admin/assessments'
+    | '/admin/users'
   id:
     | '__root__'
     | '/'
@@ -256,13 +256,13 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/questions'
     | '/admin/testimonials'
-    | '/admin/users'
     | '/avaliacao/$slug'
     | '/admin/'
     | '/avaliacao/'
     | '/admin/assessments/$id'
     | '/admin/users/$id'
     | '/admin/assessments/'
+    | '/admin/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -349,13 +349,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AvaliacaoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/testimonials': {
       id: '/admin/testimonials'
       path: '/testimonials'
@@ -398,6 +391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAttemptsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/users/': {
+      id: '/admin/users/'
+      path: '/users'
+      fullPath: '/admin/users/'
+      preLoaderRoute: typeof AdminUsersIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/assessments/': {
       id: '/admin/assessments/'
       path: '/assessments'
@@ -407,10 +407,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/users/$id': {
       id: '/admin/users/$id'
-      path: '/$id'
+      path: '/users/$id'
       fullPath: '/admin/users/$id'
       preLoaderRoute: typeof AdminUsersIdRouteImport
-      parentRoute: typeof AdminUsersRoute
+      parentRoute: typeof AdminRoute
     }
     '/admin/assessments/$id': {
       id: '/admin/assessments/$id'
@@ -422,18 +422,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AdminUsersRouteChildren {
-  AdminUsersIdRoute: typeof AdminUsersIdRoute
-}
-
-const AdminUsersRouteChildren: AdminUsersRouteChildren = {
-  AdminUsersIdRoute: AdminUsersIdRoute,
-}
-
-const AdminUsersRouteWithChildren = AdminUsersRoute._addFileChildren(
-  AdminUsersRouteChildren,
-)
-
 interface AdminRouteChildren {
   AdminAttemptsRoute: typeof AdminAttemptsRoute
   AdminDownloadsRoute: typeof AdminDownloadsRoute
@@ -441,10 +429,11 @@ interface AdminRouteChildren {
   AdminProductsRoute: typeof AdminProductsRoute
   AdminQuestionsRoute: typeof AdminQuestionsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
-  AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
   AdminAssessmentsIdRoute: typeof AdminAssessmentsIdRoute
+  AdminUsersIdRoute: typeof AdminUsersIdRoute
   AdminAssessmentsIndexRoute: typeof AdminAssessmentsIndexRoute
+  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -454,10 +443,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProductsRoute: AdminProductsRoute,
   AdminQuestionsRoute: AdminQuestionsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
-  AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
   AdminAssessmentsIdRoute: AdminAssessmentsIdRoute,
+  AdminUsersIdRoute: AdminUsersIdRoute,
   AdminAssessmentsIndexRoute: AdminAssessmentsIndexRoute,
+  AdminUsersIndexRoute: AdminUsersIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

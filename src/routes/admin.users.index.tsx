@@ -11,7 +11,7 @@ import {
   deleteUser,
 } from "@/lib/admin-users.functions";
 
-export const Route = createFileRoute("/admin/users")({
+export const Route = createFileRoute("/admin/users/")({
   component: UsersPage,
 });
 
