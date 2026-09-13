@@ -4,6 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { CrudTable } from "@/components/admin/CrudTable";
 
 export const Route = createFileRoute("/admin/flashcards")({
+  head: () => ({ meta: [
+    { title: "Gerenciar flashcards — Prof. Daniel Moura" },
+    { name: "description", content: "Organize categorias, perguntas e respostas dos flashcards." },
+    { property: "og:title", content: "Gerenciar flashcards — Prof. Daniel Moura" },
+    { property: "og:description", content: "Organize categorias, perguntas e respostas dos flashcards." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: AdminFlashcards,
 });
 
@@ -38,6 +46,8 @@ function AdminFlashcards() {
         table="flashcards"
         title="Flashcards"
         description="Perguntas e respostas com 3 níveis de dificuldade."
+        groupBy="category_id"
+        groupLabel={(categoryId) => cats.find((category: any) => category.id === categoryId)?.name ?? "Sem categoria"}
         fields={[
           {
             name: "category_id", label: "Categoria", type: "select", required: true,

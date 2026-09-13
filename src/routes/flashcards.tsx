@@ -56,6 +56,19 @@ function Page() {
     },
   });
 
+  const availability = useQuery({
+    queryKey: ["fc_category_availability", diff],
+    enabled: Boolean(diff) && !playing,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("flashcards")
+        .select("id, category_id")
+        .eq("difficulty", diff as "facil" | "medio" | "dificil");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const cards = useQuery({
     queryKey: ["fc_cards", diff, catId, sessionKey],
     enabled: !!diff && catChosen && playing,
@@ -142,6 +155,15 @@ function Page() {
 
   const diffLabel = DIFFS.find((d) => d.id === diff)?.label;
   const canStart = !!diff && catChosen;
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of availability.data ?? []) {
+      counts.set(item.category_id, (counts.get(item.category_id) ?? 0) + 1);
+    }
+    return counts;
+  }, [availability.data]);
+  const availableCategories = (cats.data ?? []).filter((category: any) => (categoryCounts.get(category.id) ?? 0) > 0);
+  const availableTotal = availability.data?.length ?? 0;
 
   return (
     <main className="bg-background text-foreground min-h-screen">
@@ -186,23 +208,33 @@ function Page() {
               <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">
                 2. Escolha o assunto {!diff && <span className="normal-case text-xs">(selecione o nível primeiro)</span>}
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <button
                   onClick={() => { setCatId(null); setCatChosen(true); }}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
+                  disabled={availability.isLoading || availableTotal === 0}
+                  className={`flex min-h-20 items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
                     catChosen && catId === null ? "bg-primary text-primary-foreground border-transparent" : "bg-card border-border hover:border-primary"
                   }`}
-                >Todas</button>
-                {(cats.data ?? []).map((c: any) => (
+                >
+                  <span className="font-semibold">Todas as categorias</span>
+                  <span className="rounded-full bg-muted/70 px-2 py-1 text-xs text-muted-foreground">{availableTotal}</span>
+                </button>
+                {availableCategories.map((c: any) => (
                   <button
                     key={c.id}
                     onClick={() => { setCatId(c.id); setCatChosen(true); }}
-                    className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
+                    className={`flex min-h-20 items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-all ${
                       catChosen && catId === c.id ? "bg-primary text-primary-foreground border-transparent" : "bg-card border-border hover:border-primary"
                     }`}
-                  >{c.name}</button>
+                  >
+                    <span className="font-semibold">{c.name}</span>
+                    <span className="rounded-full bg-muted/70 px-2 py-1 text-xs text-muted-foreground">{categoryCounts.get(c.id)}</span>
+                  </button>
                 ))}
               </div>
+              {diff && !availability.isLoading && availableTotal === 0 && (
+                <p className="mt-3 text-sm text-muted-foreground">Nenhum flashcard disponível neste nível.</p>
+              )}
             </div>
 
             {/* Step 3: Time */}
