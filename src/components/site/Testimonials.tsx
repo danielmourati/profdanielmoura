@@ -1,13 +1,36 @@
 import { motion } from "framer-motion";
 import { Quote, Star } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const items = [
-  { name: "Mariana S.", role: "Aprovada ACS/ACE", text: "Consegui entender Informática de um jeito simples. As aulas mudaram minha forma de estudar." },
-  { name: "Rafael L.", role: "Concursando", text: "As aulas do Prof. Daniel foram decisivas na minha aprovação. Didática excelente." },
-  { name: "Juliana P.", role: "Servidora", text: "Os materiais são objetivos e muito bem explicados. Recomendo para qualquer concurseiro." },
-];
+type Testimonial = {
+  id: string;
+  name: string;
+  role: string | null;
+  content: string;
+  avatar_url: string | null;
+  rating: number;
+};
 
 export function Testimonials() {
+  const { data: items = [] } = useQuery({
+    queryKey: ["testimonials"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("testimonials")
+        .select("id, name, role, content, avatar_url, rating")
+        .eq("active", true)
+        .order("order_index", { ascending: true });
+
+      if (error) throw error;
+      return data as Testimonial[];
+    },
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+  });
+
+  if (items.length === 0) return null;
+
   return (
     <section className="relative py-24 lg:py-32 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-5 lg:px-8">
@@ -21,7 +44,7 @@ export function Testimonials() {
         <div className="mt-14 grid md:grid-cols-3 gap-5">
           {items.map((t, i) => (
             <motion.div
-              key={t.name}
+              key={t.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -29,19 +52,33 @@ export function Testimonials() {
               className="bg-card border border-border rounded-3xl p-7 hover:border-primary/40 transition-colors relative"
             >
               <Quote className="absolute top-5 right-5 text-primary/20" size={42} />
-              <div className="flex gap-1 text-gold">
+              <div className="flex gap-1" aria-label={`${Math.max(1, Math.min(5, t.rating))} de 5 estrelas`}>
                 {Array.from({ length: 5 }).map((_, k) => (
-                  <Star key={k} size={16} fill="currentColor" />
+                  <Star
+                    key={k}
+                    size={16}
+                    className={k < Math.max(1, Math.min(5, t.rating)) ? "text-gold" : "text-muted-foreground/40"}
+                    fill={k < Math.max(1, Math.min(5, t.rating)) ? "currentColor" : "none"}
+                  />
                 ))}
               </div>
-              <p className="mt-4 text-foreground leading-relaxed">"{t.text}"</p>
+              <p className="mt-4 text-foreground leading-relaxed">“{t.content}”</p>
               <div className="mt-6 pt-5 border-t border-border flex items-center gap-3">
-                <div className="size-10 rounded-full bg-gradient-primary grid place-items-center font-bold text-primary-foreground">
-                  {t.name[0]}
-                </div>
+                {t.avatar_url ? (
+                  <img
+                    src={t.avatar_url}
+                    alt={`Foto de ${t.name}`}
+                    className="size-10 rounded-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="size-10 rounded-full bg-gradient-primary grid place-items-center font-bold text-primary-foreground">
+                    {t.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div>
                   <div className="font-semibold">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.role}</div>
+                  {t.role && <div className="text-xs text-muted-foreground">{t.role}</div>}
                 </div>
               </div>
             </motion.div>
