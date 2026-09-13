@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Download as DownloadIcon, FileText, FileSpreadsheet, File, Lock } from "lucide-react";
+import { Download as DownloadIcon, FileText, FileSpreadsheet, File } from "lucide-react";
 
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
@@ -21,7 +21,7 @@ function Page() {
   const { data = [], isLoading } = useQuery({
     queryKey: ["downloads_public"],
     queryFn: async () => {
-      const { data } = await supabase.from("downloads").select("*").order("order_index");
+      const { data } = await supabase.from("downloads").select("*").eq("active", true).order("order_index");
       return data ?? [];
     },
   });
@@ -47,20 +47,10 @@ function Page() {
           {data.map((d: any) => {
 
             const Icon = iconFor(d.icon);
-            const locked = !d.active;
-            const cardClass = `relative bg-card border rounded-2xl p-6 transition-all flex items-start gap-4 ${
-              locked
-                ? "border-border/60 opacity-70 cursor-not-allowed"
-                : "border-border hover:border-primary/40 hover:shadow-glow"
-            }`;
+            const cardClass = "relative bg-card border border-border rounded-2xl p-6 transition-all flex items-start gap-4 hover:border-primary/40 hover:shadow-glow";
             const content = (
               <>
-                {locked && (
-                  <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-destructive/15 border border-destructive/30 text-destructive text-[10px] font-bold uppercase tracking-wider">
-                    <Lock size={10} /> Bloqueado
-                  </span>
-                )}
-                <div className={`size-12 grid place-items-center rounded-xl shrink-0 ${locked ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>
+                <div className="size-12 grid place-items-center rounded-xl shrink-0 bg-primary/10 text-primary">
                   <Icon size={24} />
                 </div>
                 <div className="flex-1">
@@ -69,15 +59,13 @@ function Page() {
                   </div>
                   <h3 className="mt-1 font-display font-bold text-lg">{d.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{d.description}</p>
-                  <div className={`mt-3 inline-flex items-center gap-1 text-sm font-semibold ${locked ? "text-muted-foreground" : "text-primary"}`}>
-                    {locked ? (<><Lock size={14} /> Indisponível</>) : (<><DownloadIcon size={14} /> Baixar</>)}
+                  <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                    <DownloadIcon size={14} /> Baixar
                   </div>
                 </div>
               </>
             );
-            return locked ? (
-              <div key={d.id} className={cardClass} aria-disabled="true">{content}</div>
-            ) : (
+            return (
               <a
                 key={d.id}
                 href={d.file_url}

@@ -1,20 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { listAdminAttempts } from "@/lib/admin-data.functions";
 
 export const Route = createFileRoute("/admin/attempts")({ component: P });
 
 function P() {
+  const fetchAttempts = useServerFn(listAdminAttempts);
   const { data = [] } = useQuery({
     queryKey: ["all_attempts"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("assessment_attempts")
-        .select("*, assessments(title)")
-        .order("created_at", { ascending: false })
-        .limit(200);
-      return data ?? [];
-    },
+    queryFn: () => fetchAttempts(),
   });
 
   return (
@@ -37,7 +32,9 @@ function P() {
               <tr key={a.id} className="border-t border-border text-sm">
                 <td className="px-4 py-3">{new Date(a.created_at).toLocaleString("pt-BR")}</td>
                 <td className="px-4 py-3">{a.assessments?.title ?? "—"}</td>
-                <td className="px-4 py-3 text-xs text-muted-foreground">{a.user_id ? a.user_id.slice(0, 8) : "Anônimo"}</td>
+                <td className="px-4 py-3">
+                  {a.user_id ? <Link to="/admin/users/$id" params={{ id: a.user_id }} className="text-primary hover:underline">{a.student?.display_name || a.student?.email || "Usuário"}</Link> : <span className="text-muted-foreground">Anônimo</span>}
+                </td>
                 <td className="px-4 py-3 font-semibold">{a.score}%</td>
                 <td className="px-4 py-3">{a.correct_count}/{a.total_questions}</td>
                 <td className="px-4 py-3">{a.band_label}</td>

@@ -1,26 +1,23 @@
 import { motion } from "framer-motion";
-import { FileSpreadsheet, Download } from "lucide-react";
+import { FileSpreadsheet, FileText, File, Download } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const files = [
-  {
-    icon: FileSpreadsheet,
-    title: "Excel Intermediário — Aula 1",
-    desc: "Material de apoio da aula 1 de Excel Intermediário. Arquivo .xlsx para download gratuito.",
-    href: "/downloads/Excel-Intermediario-Aula-1.xlsx",
-    filename: "Excel-Intermediario-Aula-1.xlsx",
-    size: "XLSX",
-  },
-  {
-    icon: FileSpreadsheet,
-    title: "Excel Intermediário — Aula 2",
-    desc: "Material de apoio da aula 2 de Excel Intermediário. Arquivo .xlsx para download gratuito.",
-    href: "/downloads/Excel-Intermediario-Aula-2.xlsx",
-    filename: "Excel-Intermediario-Aula-2.xlsx",
-    size: "XLSX",
-  },
-];
+const iconFor = (name: string) => name === "spreadsheet" || name === "xlsx" ? FileSpreadsheet : name === "pdf" || name === "file-text" ? FileText : File;
 
 export function Downloads() {
+  const { data: files = [] } = useQuery({
+    queryKey: ["downloads_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("downloads").select("*").eq("active", true).order("order_index");
+      if (error) throw error;
+      return data ?? [];
+    },
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+  });
+
+  if (files.length === 0) return null;
   return (
     <section id="downloads" className="relative py-24 lg:py-32 bg-secondary/30">
       <div className="absolute inset-0 grid-bg opacity-30" />
@@ -36,7 +33,9 @@ export function Downloads() {
         </div>
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {files.map((f, i) => (
+          {files.map((f, i) => {
+            const Icon = iconFor(f.icon);
+            return (
             <motion.div
               key={f.title}
               initial={{ opacity: 0, y: 30 }}
@@ -48,16 +47,16 @@ export function Downloads() {
               <div className="absolute -top-20 -right-20 size-40 rounded-full bg-gradient-to-br from-primary to-accent opacity-15 blur-2xl group-hover:opacity-30 transition-opacity" />
               <div className="relative">
                 <div className="size-14 rounded-2xl bg-gradient-to-br from-primary to-accent grid place-items-center text-background shadow-glow">
-                  <f.icon size={24} />
+                  <Icon size={24} />
                 </div>
                 <h3 className="mt-5 text-lg font-display font-bold leading-snug">{f.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{f.description}</p>
 
                 <div className="mt-6 flex items-center justify-between pt-4 border-t border-border">
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{f.size}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{f.file_type}</span>
                   <a
-                    href={f.href}
-                    download={f.filename}
+                    href={f.file_url}
+                    download={f.file_name}
                     className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-3 transition-all"
                   >
                     <Download size={16} /> Baixar
@@ -65,7 +64,7 @@ export function Downloads() {
                 </div>
               </div>
             </motion.div>
-          ))}
+          )})}
         </div>
       </div>
     </section>

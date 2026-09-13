@@ -5,7 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
 
-export const Route = createFileRoute("/admin/assessments/$id")({ component: P });
+export const Route = createFileRoute("/admin/assessments/$id")({
+  head: () => ({ meta: [{ title: "Gerenciar avaliação — Prof. Daniel Moura" }, { name: "description", content: "Gerencie perguntas e faixas da avaliação diagnóstica." }, { property: "og:title", content: "Gerenciar avaliação — Prof. Daniel Moura" }, { property: "og:description", content: "Gerencie perguntas e faixas da avaliação diagnóstica." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  component: P,
+});
 
 function P() {
   const { id } = Route.useParams();

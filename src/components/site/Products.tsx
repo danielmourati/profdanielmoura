@@ -1,42 +1,21 @@
 import { motion } from "framer-motion";
-import { FileText, Shield, Building2, HeartPulse, ArrowRight } from "lucide-react";
-
-const products = [
-  {
-    icon: FileText,
-    title: "Questões Comentadas de Informática",
-    desc: "Pratique com questões explicadas de forma simples e estratégica.",
-    price: "R$ 37",
-    href: "#LINK_QUESTOES",
-    accent: "from-primary to-accent",
-  },
-  {
-    icon: HeartPulse,
-    title: "Informática — ACS/ACE Parnaíba",
-    desc: "Material focado para Agente Comunitário de Saúde e Agente de Combate às Endemias.",
-    price: "R$ 47",
-    href: "#LINK_ACS",
-    accent: "from-accent to-success",
-  },
-  {
-    icon: Shield,
-    title: "Informática — GCM Parnaíba",
-    desc: "Preparação direcionada para Guarda Civil Municipal de Parnaíba.",
-    price: "R$ 47",
-    href: "#LINK_GCM",
-    accent: "from-gold to-primary",
-  },
-  {
-    icon: Building2,
-    title: "Informática — SEDESC Parnaíba",
-    desc: "Conteúdo de Informática voltado ao concurso da SEDESC Parnaíba.",
-    price: "R$ 47",
-    href: "#LINK_SEDESC",
-    accent: "from-primary to-gold",
-  },
-];
+import { FileText, ArrowRight, Clock3 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Products() {
+  const { data: products = [] } = useQuery({
+    queryKey: ["products_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("products").select("*").eq("active", true).order("order_index");
+      if (error) throw error;
+      return data ?? [];
+    },
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+  });
+
+  if (products.length === 0) return null;
   return (
     <section id="produtos" className="relative py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-5 lg:px-8">
@@ -51,36 +30,38 @@ export function Products() {
         </div>
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {products.map((p, i) => (
+          {products.map((p, i) => {
+            const comingSoon = p.coming_soon;
+            const content = (
+              <>
+                {comingSoon && <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent"><Clock3 size={11} /> Em breve</span>}
+                <div className="relative">
+                  <div className={`size-14 rounded-2xl bg-gradient-to-br ${p.accent} grid place-items-center text-background shadow-glow`}><FileText size={24} /></div>
+                  <h3 className="mt-5 text-lg font-display font-bold leading-snug">{p.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>
+                  <div className="mt-6 flex items-end justify-between pt-4 border-t border-border">
+                    <div><div className="text-[10px] uppercase tracking-wider text-muted-foreground">A partir de</div><div className="text-2xl font-display font-bold text-gradient">{new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(p.price_cents / 100)}</div></div>
+                    <span className={`inline-flex items-center gap-1 text-sm font-semibold ${comingSoon ? "text-muted-foreground" : "text-primary"}`}>{comingSoon ? "Aguarde" : "Comprar"} {!comingSoon && <ArrowRight size={16} />}</span>
+                  </div>
+                </div>
+              </>
+            );
+            const className = `group relative bg-card border rounded-3xl p-6 transition-all overflow-hidden ${comingSoon ? "border-border opacity-80 cursor-not-allowed" : "border-border hover:-translate-y-2 hover:border-primary/50"}`;
+            return comingSoon ? (
+              <motion.div key={p.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className={className} aria-disabled="true">{content}</motion.div>
+            ) : (
             <motion.a
-              key={p.title}
-              href={p.href}
+              key={p.id}
+              href={p.checkout_url}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className="group relative bg-card border border-border rounded-3xl p-6 hover:-translate-y-2 hover:border-primary/50 transition-all overflow-hidden"
+              className={className}
             >
-              <div className={`absolute -top-20 -right-20 size-40 rounded-full bg-gradient-to-br ${p.accent} opacity-15 blur-2xl group-hover:opacity-30 transition-opacity`} />
-              <div className="relative">
-                <div className={`size-14 rounded-2xl bg-gradient-to-br ${p.accent} grid place-items-center text-background shadow-glow`}>
-                  <p.icon size={24} />
-                </div>
-                <h3 className="mt-5 text-lg font-display font-bold leading-snug">{p.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{p.desc}</p>
-
-                <div className="mt-6 flex items-end justify-between pt-4 border-t border-border">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">A partir de</div>
-                    <div className="text-2xl font-display font-bold text-gradient">{p.price}</div>
-                  </div>
-                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all">
-                    Comprar <ArrowRight size={16} />
-                  </span>
-                </div>
-              </div>
+              {content}
             </motion.a>
-          ))}
+          )})}
         </div>
       </div>
     </section>

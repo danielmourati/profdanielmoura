@@ -1,0 +1,2 @@
+﻿statement,option_a,option_b,option_c,option_d,option_e,correct_option,comment,discipline,subject,area,exam,organization,city,role,education,banca,year,difficulty,active
+Qual atalho copia um item selecionado?,Ctrl+C,Ctrl+V,Ctrl+X,Ctrl+Z,,a,Ctrl+C copia o conteúdo selecionado.,Informática,Atalhos,Noções básicas,Concurso exemplo,Órgão exemplo,Parnaíba,Cargo exemplo,Médio,,2026,facil,true

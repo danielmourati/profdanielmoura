@@ -17,7 +17,7 @@ function P() {
         { name: "file_type", label: "Tipo (ex: PDF, XLSX)" },
         { name: "icon", label: "Ícone (lucide name)" },
         { name: "order_index", label: "Ordem", type: "number" },
-        { name: "active", label: "Ativo", type: "checkbox" },
+        { name: "active", label: "Ativo", type: "toggle" },
       ]}
       columns={[
         { key: "title", label: "Título" },
