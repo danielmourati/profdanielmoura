@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CrudTable } from "@/components/admin/CrudTable";
 
-export const Route = createFileRoute("/admin/assessments")({ component: P });
+export const Route = createFileRoute("/admin/assessments/")({ component: P });
 
 function P() {
   return (

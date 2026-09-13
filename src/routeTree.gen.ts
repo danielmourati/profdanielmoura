@@ -26,7 +26,7 @@ import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
 import { Route as AdminDownloadsRouteImport } from './routes/admin.downloads'
 import { Route as AdminAttemptsRouteImport } from './routes/admin.attempts'
-import { Route as AdminAssessmentsRouteImport } from './routes/admin.assessments'
+import { Route as AdminAssessmentsIndexRouteImport } from './routes/admin.assessments.index'
 import { Route as AdminAssessmentsIdRouteImport } from './routes/admin.assessments.$id'
 
 const MinhaAreaRoute = MinhaAreaRouteImport.update({
@@ -114,15 +114,15 @@ const AdminAttemptsRoute = AdminAttemptsRouteImport.update({
   path: '/attempts',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAssessmentsRoute = AdminAssessmentsRouteImport.update({
-  id: '/assessments',
-  path: '/assessments',
+const AdminAssessmentsIndexRoute = AdminAssessmentsIndexRouteImport.update({
+  id: '/assessments/',
+  path: '/assessments/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAssessmentsIdRoute = AdminAssessmentsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminAssessmentsRoute,
+  id: '/assessments/$id',
+  path: '/assessments/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -133,7 +133,6 @@ export interface FileRoutesByFullPath {
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
   '/minha-area': typeof MinhaAreaRoute
-  '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
@@ -145,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/avaliacao/': typeof AvaliacaoIndexRoute
   '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
+  '/admin/assessments/': typeof AdminAssessmentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -153,7 +153,6 @@ export interface FileRoutesByTo {
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
   '/minha-area': typeof MinhaAreaRoute
-  '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
@@ -165,6 +164,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/avaliacao': typeof AvaliacaoIndexRoute
   '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
+  '/admin/assessments': typeof AdminAssessmentsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -175,7 +175,6 @@ export interface FileRoutesById {
   '/flashcards': typeof FlashcardsRoute
   '/login': typeof LoginRoute
   '/minha-area': typeof MinhaAreaRoute
-  '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/attempts': typeof AdminAttemptsRoute
   '/admin/downloads': typeof AdminDownloadsRoute
   '/admin/flashcards': typeof AdminFlashcardsRoute
@@ -187,6 +186,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/avaliacao/': typeof AvaliacaoIndexRoute
   '/admin/assessments/$id': typeof AdminAssessmentsIdRoute
+  '/admin/assessments/': typeof AdminAssessmentsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -198,7 +198,6 @@ export interface FileRouteTypes {
     | '/flashcards'
     | '/login'
     | '/minha-area'
-    | '/admin/assessments'
     | '/admin/attempts'
     | '/admin/downloads'
     | '/admin/flashcards'
@@ -210,6 +209,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/avaliacao/'
     | '/admin/assessments/$id'
+    | '/admin/assessments/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -218,7 +218,6 @@ export interface FileRouteTypes {
     | '/flashcards'
     | '/login'
     | '/minha-area'
-    | '/admin/assessments'
     | '/admin/attempts'
     | '/admin/downloads'
     | '/admin/flashcards'
@@ -230,6 +229,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/avaliacao'
     | '/admin/assessments/$id'
+    | '/admin/assessments'
   id:
     | '__root__'
     | '/'
@@ -239,7 +239,6 @@ export interface FileRouteTypes {
     | '/flashcards'
     | '/login'
     | '/minha-area'
-    | '/admin/assessments'
     | '/admin/attempts'
     | '/admin/downloads'
     | '/admin/flashcards'
@@ -251,6 +250,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/avaliacao/'
     | '/admin/assessments/$id'
+    | '/admin/assessments/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -386,36 +386,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAttemptsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/assessments': {
-      id: '/admin/assessments'
+    '/admin/assessments/': {
+      id: '/admin/assessments/'
       path: '/assessments'
-      fullPath: '/admin/assessments'
-      preLoaderRoute: typeof AdminAssessmentsRouteImport
+      fullPath: '/admin/assessments/'
+      preLoaderRoute: typeof AdminAssessmentsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/assessments/$id': {
       id: '/admin/assessments/$id'
-      path: '/$id'
+      path: '/assessments/$id'
       fullPath: '/admin/assessments/$id'
       preLoaderRoute: typeof AdminAssessmentsIdRouteImport
-      parentRoute: typeof AdminAssessmentsRoute
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
-interface AdminAssessmentsRouteChildren {
-  AdminAssessmentsIdRoute: typeof AdminAssessmentsIdRoute
-}
-
-const AdminAssessmentsRouteChildren: AdminAssessmentsRouteChildren = {
-  AdminAssessmentsIdRoute: AdminAssessmentsIdRoute,
-}
-
-const AdminAssessmentsRouteWithChildren =
-  AdminAssessmentsRoute._addFileChildren(AdminAssessmentsRouteChildren)
-
 interface AdminRouteChildren {
-  AdminAssessmentsRoute: typeof AdminAssessmentsRouteWithChildren
   AdminAttemptsRoute: typeof AdminAttemptsRoute
   AdminDownloadsRoute: typeof AdminDownloadsRoute
   AdminFlashcardsRoute: typeof AdminFlashcardsRoute
@@ -424,10 +412,11 @@ interface AdminRouteChildren {
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminAssessmentsIdRoute: typeof AdminAssessmentsIdRoute
+  AdminAssessmentsIndexRoute: typeof AdminAssessmentsIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminAssessmentsRoute: AdminAssessmentsRouteWithChildren,
   AdminAttemptsRoute: AdminAttemptsRoute,
   AdminDownloadsRoute: AdminDownloadsRoute,
   AdminFlashcardsRoute: AdminFlashcardsRoute,
@@ -436,6 +425,8 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminTestimonialsRoute: AdminTestimonialsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminAssessmentsIdRoute: AdminAssessmentsIdRoute,
+  AdminAssessmentsIndexRoute: AdminAssessmentsIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
