@@ -17,14 +17,16 @@ function P() {
         { name: "badge", label: "Selo" },
         { name: "accent", label: "Cor (classe gradient)" },
         { name: "order_index", label: "Ordem", type: "number" },
-        { name: "active", label: "Ativo", type: "checkbox" },
+        { name: "active", label: "Ativo", type: "toggle" },
+        { name: "coming_soon", label: "Em breve", type: "toggle" },
       ]}
       columns={[
         { key: "title", label: "Título" },
         { key: "price_cents", label: "Preço (¢)" },
         { key: "active", label: "Ativo", render: (r: any) => r.active ? "Sim" : "Não" },
+        { key: "coming_soon", label: "Em breve", render: (r: any) => r.coming_soon ? "Sim" : "Não" },
       ]}
-      defaults={{ active: true, order_index: 0, accent: "from-primary to-accent", checkout_url: "#" }}
+      defaults={{ active: true, coming_soon: false, order_index: 0, accent: "from-primary to-accent", checkout_url: "#" }}
     />
   );
 }

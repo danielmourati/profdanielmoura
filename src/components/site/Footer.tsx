@@ -3,7 +3,7 @@ import logoProf from "@/assets/logo-prof.png";
 
 export function Footer() {
   return (
-    <footer id="contato" className="border-t border-border bg-background py-14">
+    <footer className="border-t border-border bg-background py-14">
       <div className="max-w-7xl mx-auto px-5 lg:px-8 grid md:grid-cols-3 gap-10">
         <div>
           <div className="flex items-center">

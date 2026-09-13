@@ -3,11 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Pencil, Trash2, Plus } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 export type Field = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "url" | "select" | "checkbox" | "file";
+  type?: "text" | "textarea" | "number" | "url" | "select" | "checkbox" | "toggle" | "file";
   options?: { value: string; label: string }[];
   required?: boolean;
   bucket?: string;
@@ -22,10 +23,11 @@ type Props<T extends { id: string }> = {
   columns: { key: keyof T | string; label: string; render?: (row: T) => ReactNode }[];
   orderBy?: string;
   defaults?: Record<string, any>;
+  headerActions?: ReactNode;
 };
 
 export function CrudTable<T extends { id: string }>({
-  table, title, description, fields, columns, orderBy = "order_index", defaults = {},
+  table, title, description, fields, columns, orderBy = "order_index", defaults = {}, headerActions,
 }: Props<T>) {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<T | null>(null);
@@ -75,12 +77,15 @@ export function CrudTable<T extends { id: string }>({
           <h1 className="text-3xl font-display font-bold">{title}</h1>
           {description && <p className="text-muted-foreground mt-1">{description}</p>}
         </div>
-        <button
-          onClick={() => { setCreating(true); setEditing(null); }}
-          className="inline-flex items-center gap-2 bg-gradient-cta text-accent-foreground font-semibold px-4 py-2 rounded-full"
-        >
-          <Plus size={16} /> Novo
-        </button>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {headerActions}
+          <button
+            onClick={() => { setCreating(true); setEditing(null); }}
+            className="inline-flex items-center gap-2 bg-gradient-cta text-accent-foreground font-semibold px-4 py-2 rounded-full"
+          >
+            <Plus size={16} /> Novo
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -167,13 +172,14 @@ function CrudForm({
                 <option value="">Selecione...</option>
                 {f.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
-            ) : f.type === "checkbox" ? (
-              <div className="mt-2">
-                <input
-                  type="checkbox"
-                  checked={!!values[f.name]}
-                  onChange={(e) => setValues({ ...values, [f.name]: e.target.checked })}
+            ) : f.type === "checkbox" || f.type === "toggle" ? (
+              <div className="mt-2 flex items-center gap-3">
+                <Switch
+                  checked={Boolean(values[f.name])}
+                  onCheckedChange={(checked) => setValues({ ...values, [f.name]: checked })}
+                  aria-label={f.label}
                 />
+                <span className="text-xs text-muted-foreground">{values[f.name] ? "Sim" : "Não"}</span>
               </div>
             ) : f.type === "file" ? (
               <FileUploadInput
