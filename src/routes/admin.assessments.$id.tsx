@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/assessments/$id")({
   head: () => ({ meta: [{ title: "Gerenciar avaliação — Prof. Daniel Moura" }, { name: "description", content: "Gerencie perguntas e faixas da avaliação diagnóstica." }, { property: "og:title", content: "Gerenciar avaliação — Prof. Daniel Moura" }, { property: "og:description", content: "Gerencie perguntas e faixas da avaliação diagnóstica." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
@@ -54,54 +54,89 @@ function P() {
 
 function QuestionsEditor({ assessmentId, items, onChange }: { assessmentId: string; items: any[]; onChange: () => void }) {
   const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [opts, setOpts] = useState([
     { id: "a", text: "" }, { id: "b", text: "" }, { id: "c", text: "" }, { id: "d", text: "" },
   ]);
   const [correct, setCorrect] = useState("a");
 
-  const create = useMutation({
+  const resetForm = () => {
+    setQ("");
+    setOpts([{ id: "a", text: "" }, { id: "b", text: "" }, { id: "c", text: "" }, { id: "d", text: "" }]);
+    setCorrect("a");
+    setEditingId(null);
+    setOpen(false);
+  };
+
+  const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("assessment_questions").insert({
+      const values = {
         assessment_id: assessmentId,
-        question: q,
+        question: q.trim(),
         options: opts as any,
         correct_option_id: correct,
-        order_index: items.length,
-      });
+      };
+      const { error } = editingId
+        ? await supabase.from("assessment_questions").update(values).eq("id", editingId)
+        : await supabase.from("assessment_questions").insert({ ...values, order_index: items.length });
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Pergunta adicionada");
-      setQ(""); setOpts([{ id: "a", text: "" }, { id: "b", text: "" }, { id: "c", text: "" }, { id: "d", text: "" }]); setCorrect("a"); setOpen(false);
+      toast.success(editingId ? "Pergunta atualizada" : "Pergunta adicionada");
+      resetForm();
       onChange();
     },
     onError: (e: any) => toast.error(e.message),
   });
+
+  const startCreating = () => {
+    resetForm();
+    setOpen(true);
+  };
+
+  const startEditing = (item: any) => {
+    const savedOptions = Array.isArray(item.options) ? item.options : [];
+    setQ(item.question ?? "");
+    setOpts(["a", "b", "c", "d"].map((id) => ({
+      id,
+      text: savedOptions.find((option: any) => option.id === id)?.text ?? "",
+    })));
+    setCorrect(item.correct_option_id ?? "a");
+    setEditingId(item.id);
+    setOpen(true);
+  };
 
   const del = useMutation({
     mutationFn: async (qid: string) => {
       const { error } = await supabase.from("assessment_questions").delete().eq("id", qid);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Excluída"); onChange(); },
+    onSuccess: () => { toast.success("Pergunta excluída"); onChange(); },
+    onError: (e: any) => toast.error(e.message),
   });
+
+  const isValid = q.trim().length > 0 && opts.every((option) => option.text.trim().length > 0);
 
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-display font-bold">Perguntas</h2>
-        <button onClick={() => setOpen(!open)} className="inline-flex items-center gap-2 bg-gradient-cta text-accent-foreground font-semibold px-4 py-2 rounded-full">
+        <button onClick={startCreating} disabled={save.isPending} className="inline-flex items-center gap-2 bg-gradient-cta text-accent-foreground font-semibold px-4 py-2 rounded-full disabled:opacity-60">
           <Plus size={16} /> Nova pergunta
         </button>
       </div>
 
       {open && (
         <div className="bg-card border border-border rounded-2xl p-6 mb-4 space-y-3">
-          <textarea value={q} onChange={(e) => setQ(e.target.value)} placeholder="Pergunta" rows={2} className="w-full bg-background border border-border rounded-md px-3 py-2" />
+          <div>
+            <h3 className="font-semibold">{editingId ? "Editar pergunta" : "Nova pergunta"}</h3>
+            <p className="text-xs text-muted-foreground">Marque a alternativa correta antes de salvar.</p>
+          </div>
+          <textarea value={q} onChange={(e) => setQ(e.target.value)} placeholder="Pergunta" aria-label="Enunciado da pergunta" rows={2} className="w-full bg-background border border-border rounded-md px-3 py-2" />
           {opts.map((o, i) => (
             <div key={o.id} className="flex items-center gap-2">
-              <input type="radio" checked={correct === o.id} onChange={() => setCorrect(o.id)} />
+              <input type="radio" name="correct-option" aria-label={`Marcar alternativa ${o.id.toUpperCase()} como correta`} checked={correct === o.id} onChange={() => setCorrect(o.id)} />
               <span className="w-6 font-mono uppercase">{o.id}</span>
               <input
                 value={o.text}
@@ -112,9 +147,9 @@ function QuestionsEditor({ assessmentId, items, onChange }: { assessmentId: stri
             </div>
           ))}
           <div className="flex justify-end gap-2">
-            <button onClick={() => setOpen(false)} className="px-4 py-2 text-sm">Cancelar</button>
-            <button onClick={() => create.mutate()} disabled={!q || opts.some((o) => !o.text)} className="bg-gradient-cta text-accent-foreground font-semibold px-5 py-2 rounded-full disabled:opacity-60">
-              Adicionar
+            <button onClick={resetForm} disabled={save.isPending} className="px-4 py-2 text-sm disabled:opacity-60">Cancelar</button>
+            <button onClick={() => save.mutate()} disabled={!isValid || save.isPending} className="bg-gradient-cta text-accent-foreground font-semibold px-5 py-2 rounded-full disabled:opacity-60">
+              {save.isPending ? "Salvando..." : editingId ? "Salvar alterações" : "Adicionar"}
             </button>
           </div>
         </div>
@@ -130,9 +165,14 @@ function QuestionsEditor({ assessmentId, items, onChange }: { assessmentId: stri
                 Correta: {it.correct_option_id?.toUpperCase()} — {(it.options as any[])?.find((o) => o.id === it.correct_option_id)?.text}
               </div>
             </div>
-            <button onClick={() => { if (confirm("Excluir?")) del.mutate(it.id); }} className="p-2 text-destructive hover:bg-muted rounded">
-              <Trash2 size={14} />
-            </button>
+            <div className="flex shrink-0 gap-1">
+              <button aria-label={`Editar pergunta ${idx + 1}`} title="Editar" onClick={() => startEditing(it)} disabled={save.isPending || del.isPending} className="p-2 hover:bg-muted rounded disabled:opacity-50">
+                <Pencil size={14} />
+              </button>
+              <button aria-label={`Excluir pergunta ${idx + 1}`} title="Excluir" onClick={() => { if (confirm("Excluir esta pergunta?")) del.mutate(it.id); }} disabled={save.isPending || del.isPending} className="p-2 text-destructive hover:bg-muted rounded disabled:opacity-50">
+                <Trash2 size={14} />
+              </button>
+            </div>
           </div>
         ))}
         {items.length === 0 && <div className="text-sm text-muted-foreground">Nenhuma pergunta ainda.</div>}
