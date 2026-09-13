@@ -71,9 +71,10 @@ export function CrudTable<T extends { id: string }>({
   });
 
   const showForm = creating || editing;
+  const groupKey = groupBy ? String(groupBy) : null;
   const groups = groupBy
     ? Array.from(data.reduce((grouped, row) => {
-        const value = String((row as Record<string, unknown>)[groupBy] ?? "uncategorized");
+        const value = String((row as unknown as Record<string, unknown>)[groupKey ?? ""] ?? "uncategorized");
         const rows = grouped.get(value) ?? [];
         rows.push(row);
         grouped.set(value, rows);
