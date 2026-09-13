@@ -22,7 +22,7 @@ function Page() {
   const [tab, setTab] = useState<Tab>("perfil");
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
+    if (!loading && !user) navigate({ to: "/login", search: { redirect: "/minha-area", mode: "login" } });
   }, [loading, user, navigate]);
 
   if (!user) return null;

@@ -25,7 +25,7 @@ function AdminLayout() {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) navigate({ to: "/login" });
+    if (!user) navigate({ to: "/login", search: { redirect: "/admin", mode: "login" } });
   }, [loading, user, navigate]);
 
   if (loading) return <div className="min-h-screen grid place-items-center">Carregando...</div>;

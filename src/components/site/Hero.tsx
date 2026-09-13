@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import hero from "@/assets/daniel-hero.png";
+import heroAsset from "@/assets/hero-site-prof-daniel-moura.jfif.asset.json";
 import bg from "@/assets/hero-bg.jpg";
 
 export function Hero() {
@@ -30,7 +30,7 @@ export function Hero() {
       >
         <div className="absolute -inset-10 bg-gradient-primary blur-3xl opacity-25 rounded-full" />
         <img
-          src={hero}
+          src={heroAsset.url}
           alt="Prof. Daniel Moura"
           className="relative w-[36rem] xl:w-[44rem] h-auto object-contain object-bottom drop-shadow-2xl block"
         />
@@ -77,7 +77,7 @@ export function Hero() {
           className="lg:hidden relative justify-self-center self-end"
         >
           <img
-            src={hero}
+            src={heroAsset.url}
             alt="Prof. Daniel Moura"
             className="relative w-full max-w-md h-auto object-contain drop-shadow-2xl"
           />

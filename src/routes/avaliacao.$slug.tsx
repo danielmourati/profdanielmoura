@@ -101,7 +101,7 @@ function Page() {
             {user ? (
               <Link to="/minha-area" className="text-primary underline self-center text-sm">Ver meu histórico</Link>
             ) : (
-              <Link to="/login" className="text-primary underline self-center text-sm">Criar conta para salvar</Link>
+              <Link to="/login" search={{ redirect: "/avaliacao", mode: "signup" }} className="text-primary underline self-center text-sm">Criar conta para salvar</Link>
             )}
           </div>
         </div>
