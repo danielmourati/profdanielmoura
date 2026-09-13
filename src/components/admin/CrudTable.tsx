@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { ChevronDown, Pencil, Trash2, Plus } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 export type Field = {
@@ -24,10 +24,12 @@ type Props<T extends { id: string }> = {
   orderBy?: string;
   defaults?: Record<string, any>;
   headerActions?: ReactNode;
+  groupBy?: keyof T | string;
+  groupLabel?: (groupValue: string, rows: T[]) => string;
 };
 
 export function CrudTable<T extends { id: string }>({
-  table, title, description, fields, columns, orderBy = "order_index", defaults = {}, headerActions,
+  table, title, description, fields, columns, orderBy = "order_index", defaults = {}, headerActions, groupBy, groupLabel,
 }: Props<T>) {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<T | null>(null);
@@ -69,6 +71,44 @@ export function CrudTable<T extends { id: string }>({
   });
 
   const showForm = creating || editing;
+  const groupKey = groupBy ? String(groupBy) : null;
+  const groups = groupBy
+    ? Array.from(data.reduce((grouped, row) => {
+        const value = String((row as unknown as Record<string, unknown>)[groupKey ?? ""] ?? "uncategorized");
+        const rows = grouped.get(value) ?? [];
+        rows.push(row);
+        grouped.set(value, rows);
+        return grouped;
+      }, new Map<string, T[]>())).map(([value, rows]) => ({ value, rows }))
+    : [];
+
+  const renderRows = (rows: T[]) => (
+    <table className="w-full min-w-[680px]">
+      <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
+        <tr>
+          {columns.map((c) => <th key={String(c.key)} className="text-left px-4 py-3 font-medium">{c.label}</th>)}
+          <th className="px-4 py-3"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.id} className="border-t border-border">
+            {columns.map((c) => (
+              <td key={String(c.key)} className="px-4 py-3 text-sm">
+                {c.render ? c.render(row) : String((row as any)[c.key] ?? "")}
+              </td>
+            ))}
+            <td className="px-4 py-3 text-right">
+              <div className="flex justify-end gap-1">
+                <button aria-label="Editar" title="Editar" onClick={() => { setEditing(row); setCreating(false); }} className="p-2 hover:bg-muted rounded"><Pencil size={14} /></button>
+                <button aria-label="Excluir" title="Excluir" onClick={() => { if (confirm("Excluir?")) del.mutate(row.id); }} className="p-2 hover:bg-muted rounded text-destructive"><Trash2 size={14} /></button>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 
   return (
     <div>
@@ -98,37 +138,26 @@ export function CrudTable<T extends { id: string }>({
         />
       )}
 
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      <div className={groupBy ? "space-y-3" : "bg-card border border-border rounded-2xl overflow-x-auto"}>
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground">Carregando...</div>
+          <div className="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">Carregando...</div>
         ) : data.length === 0 ? (
-          <div className="p-8 text-center text-muted-foreground">Nenhum registro</div>
+          <div className="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">Nenhum registro</div>
+        ) : groupBy ? (
+          groups.map((group) => (
+            <details key={group.value} open className="group overflow-hidden rounded-lg border border-border bg-card">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 hover:bg-muted/30">
+                <div>
+                  <h2 className="font-display text-lg font-bold">{groupLabel?.(group.value, group.rows) ?? group.value}</h2>
+                  <p className="text-xs text-muted-foreground">{group.rows.length} {group.rows.length === 1 ? "flashcard" : "flashcards"}</p>
+                </div>
+                <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+              </summary>
+              <div className="overflow-x-auto border-t border-border">{renderRows(group.rows)}</div>
+            </details>
+          ))
         ) : (
-          <table className="w-full">
-            <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                {columns.map((c) => <th key={String(c.key)} className="text-left px-4 py-3 font-medium">{c.label}</th>)}
-                <th className="px-4 py-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row) => (
-                <tr key={row.id} className="border-t border-border">
-                  {columns.map((c) => (
-                    <td key={String(c.key)} className="px-4 py-3 text-sm">
-                      {c.render ? c.render(row) : String((row as any)[c.key] ?? "")}
-                    </td>
-                  ))}
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex justify-end gap-1">
-                      <button onClick={() => { setEditing(row); setCreating(false); }} className="p-2 hover:bg-muted rounded"><Pencil size={14} /></button>
-                      <button onClick={() => { if (confirm("Excluir?")) del.mutate(row.id); }} className="p-2 hover:bg-muted rounded text-destructive"><Trash2 size={14} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          renderRows(data)
         )}
       </div>
     </div>
