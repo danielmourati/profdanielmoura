@@ -321,7 +321,7 @@ function Page() {
                             <img
                               src={card.image_url}
                               alt={`Ilustração da pergunta: ${card.question}`}
-                              className="max-h-28 w-full rounded-md object-contain md:max-h-32"
+                              className="max-h-20 w-full rounded-md object-contain md:max-h-28"
                               loading="eager"
                             />
                           )}
