@@ -287,6 +287,7 @@ export type Database = {
           active: boolean
           badge: string | null
           checkout_url: string
+          coming_soon: boolean
           created_at: string
           description: string
           features: Json
@@ -302,6 +303,7 @@ export type Database = {
           active?: boolean
           badge?: string | null
           checkout_url?: string
+          coming_soon?: boolean
           created_at?: string
           description?: string
           features?: Json
@@ -317,6 +319,7 @@ export type Database = {
           active?: boolean
           badge?: string | null
           checkout_url?: string
+          coming_soon?: boolean
           created_at?: string
           description?: string
           features?: Json
