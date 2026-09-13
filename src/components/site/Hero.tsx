@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import heroAsset from "@/assets/hero-site-prof-daniel-moura.jfif.asset.json";
+import hero from "@/assets/hero-prof-daniel-transparent.png";
 import bg from "@/assets/hero-bg.jpg";
 
 export function Hero() {
@@ -30,13 +30,13 @@ export function Hero() {
       >
         <div className="absolute -inset-10 bg-gradient-primary blur-3xl opacity-25 rounded-full" />
         <img
-          src={heroAsset.url}
+          src={hero}
           alt="Prof. Daniel Moura"
-          className="relative w-[36rem] xl:w-[44rem] h-auto object-contain object-bottom drop-shadow-2xl block"
+          className="relative w-[36rem] xl:w-[44rem] h-auto object-contain object-bottom drop-shadow-lg block"
         />
       </motion.div>
 
-      <div className="relative max-w-7xl mx-auto px-5 lg:px-8 pt-32 lg:pt-40 pb-16 grid lg:grid-cols-2 gap-8 items-center min-h-[100svh]">
+      <div className="relative max-w-7xl mx-auto px-5 lg:px-8 pt-32 lg:pt-40 pb-0 lg:pb-16 grid lg:grid-cols-2 gap-8 items-center min-h-[100svh]">
         {/* Left: Headline + CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -77,9 +77,9 @@ export function Hero() {
           className="lg:hidden relative justify-self-center self-end"
         >
           <img
-            src={heroAsset.url}
+            src={hero}
             alt="Prof. Daniel Moura"
-            className="relative w-full max-w-md h-auto object-contain drop-shadow-2xl"
+            className="relative w-full max-w-md h-auto object-contain object-bottom drop-shadow-lg"
           />
         </motion.div>
       </div>
