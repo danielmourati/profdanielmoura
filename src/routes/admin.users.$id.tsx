@@ -4,7 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Brain, ClipboardList, Mail, Phone, UserRound } from "lucide-react";
 import { getAdminUserDetail } from "@/lib/admin-data.functions";
 
-export const Route = createFileRoute("/admin/users/$id")({ component: UserDetail });
+export const Route = createFileRoute("/admin/users/$id")({
+  head: () => ({ meta: [{ title: "Dados do aluno — Prof. Daniel Moura" }, { name: "description", content: "Dados e histórico de desempenho do aluno." }, { property: "og:title", content: "Dados do aluno — Prof. Daniel Moura" }, { property: "og:description", content: "Dados e histórico de desempenho do aluno." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  component: UserDetail,
+});
 
 function UserDetail() {
   const { id } = Route.useParams();
