@@ -62,6 +62,7 @@ function AdminFlashcards() {
             ],
           },
           { name: "question", label: "Pergunta", type: "textarea", required: true },
+          { name: "image_url", label: "Imagem da pergunta (opcional)", type: "image", bucket: "products", pathPrefix: "flashcards" },
           { name: "answer", label: "Resposta", type: "textarea", required: true },
           { name: "order_index", label: "Ordem", type: "number" },
         ]}

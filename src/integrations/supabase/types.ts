@@ -247,6 +247,7 @@ export type Database = {
           created_at: string
           difficulty: Database["public"]["Enums"]["flashcard_difficulty"]
           id: string
+          image_url: string | null
           order_index: number
           question: string
           updated_at: string
@@ -257,6 +258,7 @@ export type Database = {
           created_at?: string
           difficulty?: Database["public"]["Enums"]["flashcard_difficulty"]
           id?: string
+          image_url?: string | null
           order_index?: number
           question: string
           updated_at?: string
@@ -267,6 +269,7 @@ export type Database = {
           created_at?: string
           difficulty?: Database["public"]["Enums"]["flashcard_difficulty"]
           id?: string
+          image_url?: string | null
           order_index?: number
           question?: string
           updated_at?: string

@@ -2,17 +2,18 @@ import { useState, type ReactNode } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ChevronDown, Pencil, Trash2, Plus } from "lucide-react";
+import { ChevronDown, ImageUp, Pencil, Trash2, Plus, X } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 export type Field = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "url" | "select" | "checkbox" | "toggle" | "file";
+  type?: "text" | "textarea" | "number" | "url" | "select" | "checkbox" | "toggle" | "file" | "image";
   options?: { value: string; label: string }[];
   required?: boolean;
   bucket?: string;
   fileNameField?: string;
+  pathPrefix?: string;
 };
 
 type Props<T extends { id: string }> = {
@@ -181,7 +182,7 @@ function CrudForm({
     >
       <div className="grid md:grid-cols-2 gap-4">
         {fields.map((f) => (
-          <div key={f.name} className={f.type === "textarea" ? "md:col-span-2" : ""}>
+          <div key={f.name} className={f.type === "textarea" || f.type === "image" ? "md:col-span-2" : ""}>
             <label className="text-sm font-medium">{f.label}</label>
             {f.type === "textarea" ? (
               <textarea
@@ -210,6 +211,12 @@ function CrudForm({
                 />
                 <span className="text-xs text-muted-foreground">{values[f.name] ? "Sim" : "Não"}</span>
               </div>
+            ) : f.type === "image" ? (
+              <ImageUploadInput
+                field={f}
+                value={values[f.name] ?? ""}
+                onChange={(url) => setValues({ ...values, [f.name]: url })}
+              />
             ) : f.type === "file" ? (
               <FileUploadInput
                 field={f}
@@ -260,7 +267,7 @@ function FileUploadInput({
     setUploading(true);
     try {
       const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `${Date.now()}-${safe}`;
+       const path = `${field.pathPrefix ? `${field.pathPrefix}/` : ""}${Date.now()}-${safe}`;
       const { error } = await supabase.storage.from(bucket).upload(path, file, {
         cacheControl: "3600",
         upsert: false,
@@ -291,6 +298,83 @@ function FileUploadInput({
         <a href={value} target="_blank" rel="noreferrer" className="text-xs text-primary underline break-all">
           {value}
         </a>
+      )}
+    </div>
+  );
+}
+
+function ImageUploadInput({
+  field,
+  value,
+  onChange,
+}: {
+  field: Field;
+  value: string;
+  onChange: (url: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const bucket = field.bucket ?? "products";
+
+  async function handleImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Selecione um arquivo de imagem.");
+      e.target.value = "";
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `${field.pathPrefix ? `${field.pathPrefix}/` : ""}${Date.now()}-${safe}`;
+      const { error } = await supabase.storage.from(bucket).upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: file.type,
+      });
+      if (error) throw error;
+      const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+      onChange(data.publicUrl);
+      toast.success("Imagem enviada");
+    } catch (err: any) {
+      toast.error(err.message ?? "Falha no upload da imagem");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  return (
+    <div className="mt-1 grid gap-4 md:grid-cols-[1fr_auto]">
+      <div className="space-y-3">
+        <input
+          type="url"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="https://exemplo.com/imagem.jpg"
+          className="w-full rounded-md border border-border bg-background px-3 py-2"
+        />
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-border bg-muted px-4 py-2 text-sm font-semibold hover:border-primary">
+          <ImageUp size={16} />
+          {uploading ? "Enviando..." : "Enviar imagem"}
+          <input type="file" accept="image/*" onChange={handleImage} disabled={uploading} className="sr-only" />
+        </label>
+        <p className="text-xs text-muted-foreground">Cole uma URL ou envie uma imagem. A última opção usada será mantida.</p>
+      </div>
+      {value && (
+        <div className="relative h-28 w-full overflow-hidden rounded-md border border-border bg-background md:w-44">
+          <img src={value} alt="Prévia da imagem" className="h-full w-full object-contain" />
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            aria-label="Remover imagem"
+            title="Remover imagem"
+            className="absolute right-2 top-2 rounded-full bg-background/90 p-1.5 text-destructive shadow"
+          >
+            <X size={14} />
+          </button>
+        </div>
       )}
     </div>
   );
