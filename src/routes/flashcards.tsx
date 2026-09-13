@@ -313,9 +313,19 @@ function Page() {
                           <span className="text-accent font-bold">{diffLabel}</span>
                           <span className="text-muted-foreground">Pergunta {index + 1}</span>
                         </div>
-                        <p className="text-lg md:text-xl font-display font-semibold text-center leading-tight">
-                          {card?.question}
-                        </p>
+                        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 py-2">
+                          <p className="text-base md:text-lg font-display font-semibold text-center leading-tight line-clamp-3">
+                            {card?.question}
+                          </p>
+                          {card?.image_url && (
+                            <img
+                              src={card.image_url}
+                              alt={`Ilustração da pergunta: ${card.question}`}
+                              className="max-h-28 w-full rounded-md object-contain md:max-h-32"
+                              loading="eager"
+                            />
+                          )}
+                        </div>
                         {/* Glass pill affordance */}
                         <div className="relative flex flex-col items-center">
                           <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-lg transition-all duration-500 group-hover/card:bg-primary/20 group-hover/card:border-primary/30 group-hover/card:scale-105">
