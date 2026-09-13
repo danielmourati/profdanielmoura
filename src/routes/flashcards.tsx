@@ -10,7 +10,14 @@ import { supabase } from "@/integrations/supabase/client";
 
 
 export const Route = createFileRoute("/flashcards")({
-  head: () => ({ meta: [{ title: "Flashcards — Informática para Concursos" }] }),
+  head: () => ({ meta: [
+    { title: "Flashcards de Informática — Prof. Daniel Moura" },
+    { name: "description", content: "Treine informática para concursos com flashcards organizados por nível e categoria." },
+    { property: "og:title", content: "Flashcards de Informática — Prof. Daniel Moura" },
+    { property: "og:description", content: "Treine informática para concursos com flashcards organizados por nível e categoria." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Gated,
 });
 

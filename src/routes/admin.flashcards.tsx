@@ -45,7 +45,7 @@ function AdminFlashcards() {
       <CrudTable
         table="flashcards"
         title="Flashcards"
-        description="Perguntas e respostas com 3 níveis de dificuldade."
+        description="Perguntas e respostas com 3 níveis de dificuldade, agrupadas por categoria."
         groupBy="category_id"
         groupLabel={(categoryId) => cats.find((category: any) => category.id === categoryId)?.name ?? "Sem categoria"}
         fields={[

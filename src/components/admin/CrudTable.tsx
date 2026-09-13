@@ -72,8 +72,13 @@ export function CrudTable<T extends { id: string }>({
 
   const showForm = creating || editing;
   const groups = groupBy
-    ? Object.entries(Object.groupBy(data, (row) => String((row as Record<string, unknown>)[groupBy] ?? "uncategorized")))
-        .map(([value, rows]) => ({ value, rows: rows ?? [] }))
+    ? Array.from(data.reduce((grouped, row) => {
+        const value = String((row as Record<string, unknown>)[groupBy] ?? "uncategorized");
+        const rows = grouped.get(value) ?? [];
+        rows.push(row);
+        grouped.set(value, rows);
+        return grouped;
+      }, new Map<string, T[]>())).map(([value, rows]) => ({ value, rows }))
     : [];
 
   const renderRows = (rows: T[]) => (
