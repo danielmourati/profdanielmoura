@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { FileUp, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { importAssessmentQuestions } from "@/lib/assessments.functions";
 
 export const Route = createFileRoute("/admin/assessments/$id")({
   head: () => ({ meta: [{ title: "Gerenciar avaliação — Prof. Daniel Moura" }, { name: "description", content: "Gerencie perguntas e faixas da avaliação diagnóstica." }, { property: "og:title", content: "Gerenciar avaliação — Prof. Daniel Moura" }, { property: "og:description", content: "Gerencie perguntas e faixas da avaliação diagnóstica." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
@@ -53,6 +56,7 @@ function P() {
 }
 
 function QuestionsEditor({ assessmentId, items, onChange }: { assessmentId: string; items: any[]; onChange: () => void }) {
+  const fileInput = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [q, setQ] = useState("");
@@ -60,6 +64,10 @@ function QuestionsEditor({ assessmentId, items, onChange }: { assessmentId: stri
     { id: "a", text: "" }, { id: "b", text: "" }, { id: "c", text: "" }, { id: "d", text: "" },
   ]);
   const [correct, setCorrect] = useState("a");
+  const [importFile, setImportFile] = useState("");
+  const [importRows, setImportRows] = useState<AssessmentImportRow[]>([]);
+  const [importErrors, setImportErrors] = useState<string[]>([]);
+  const runImport = useServerFn(importAssessmentQuestions);
 
   const resetForm = () => {
     setQ("");
@@ -116,16 +124,96 @@ function QuestionsEditor({ assessmentId, items, onChange }: { assessmentId: stri
     onError: (e: any) => toast.error(e.message),
   });
 
+  const importMutation = useMutation({
+    mutationFn: () => runImport({ data: { assessmentId, rows: importRows } }),
+    onSuccess: (result) => {
+      toast.success(`${result.imported} perguntas importadas`);
+      closeImport();
+      onChange();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const closeImport = () => {
+    setImportFile("");
+    setImportRows([]);
+    setImportErrors([]);
+  };
+
+  const readCsv = async (file: File) => {
+    const text = await file.text();
+    const parsed = parseSemicolonCsv(text.replace(/^\uFEFF/, ""));
+    const errors: string[] = [];
+    const expected = ["pergunta", "alternativa_a", "alternativa_b", "alternativa_c", "alternativa_d", "resposta_correta"];
+    const headers = (parsed[0] ?? []).map(normalizeHeader);
+    const missing = expected.filter((header) => !headers.includes(header));
+    if (missing.length) errors.push(`Cabeçalhos ausentes: ${missing.join(", ")}.`);
+
+    const rows = parsed.slice(1).filter((cells) => cells.some((cell) => cell.trim())).map((cells, index) => {
+      const value = (header: string) => cells[headers.indexOf(header)]?.trim() ?? "";
+      const question = value("pergunta").replace(/^\s*\d+[.)-]?\s*/, "").trim();
+      const optionIds = ["a", "b", "c", "d"] as const;
+      const options = optionIds.map((id) => ({
+        id,
+        text: value(`alternativa_${id}`).replace(new RegExp(`^\\s*${id}[.)-]?\\s*`, "i"), "").trim(),
+      }));
+      const correct_option_id = value("resposta_correta").toLowerCase().replace(/[^a-d]/g, "") as "a" | "b" | "c" | "d";
+      const line = index + 2;
+      if (!question) errors.push(`Linha ${line}: pergunta vazia.`);
+      options.forEach((option) => { if (!option.text) errors.push(`Linha ${line}: alternativa ${option.id.toUpperCase()} vazia.`); });
+      if (!optionIds.includes(correct_option_id)) errors.push(`Linha ${line}: resposta correta deve ser A, B, C ou D.`);
+      return { question, options, correct_option_id };
+    });
+    if (!rows.length) errors.push("O arquivo não contém perguntas.");
+    setImportFile(file.name);
+    setImportRows(rows);
+    setImportErrors(errors);
+  };
+
   const isValid = q.trim().length > 0 && opts.every((option) => option.text.trim().length > 0);
 
   return (
     <section>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <h2 className="text-2xl font-display font-bold">Perguntas</h2>
-        <button onClick={startCreating} disabled={save.isPending} className="inline-flex items-center gap-2 bg-gradient-cta text-accent-foreground font-semibold px-4 py-2 rounded-full disabled:opacity-60">
-          <Plus size={16} /> Nova pergunta
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => fileInput.current?.click()} disabled={importMutation.isPending}>
+            <FileUp /> Importar CSV
+          </Button>
+          <input ref={fileInput} type="file" accept=".csv,text/csv" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) void readCsv(file); event.target.value = ""; }} />
+          <Button onClick={startCreating} disabled={save.isPending}>
+            <Plus /> Nova pergunta
+          </Button>
+        </div>
       </div>
+
+      {importFile && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-background/80 px-5 backdrop-blur-sm">
+          <div role="dialog" aria-modal="true" aria-labelledby="assessment-import-title" className="w-full max-w-lg rounded-md border border-border bg-card p-6 shadow-card">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 id="assessment-import-title" className="text-xl font-display font-bold">Confirmar importação</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{importFile} · {importRows.length} perguntas encontradas</p>
+              </div>
+              <Button variant="ghost" size="icon" aria-label="Fechar importação" onClick={closeImport}><X /></Button>
+            </div>
+            {importErrors.length ? (
+              <div className="mt-5 max-h-56 overflow-auto rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+                <p className="font-semibold">Corrija o arquivo antes de importar:</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">{importErrors.map((error, index) => <li key={`${index}-${error}`}>{error}</li>)}</ul>
+              </div>
+            ) : (
+              <p className="mt-5 rounded-md border border-success/40 bg-success/10 p-4 text-sm text-success">Arquivo validado. As perguntas serão adicionadas ao final da avaliação.</p>
+            )}
+            <div className="mt-6 flex justify-end gap-2">
+              <Button variant="ghost" onClick={closeImport} disabled={importMutation.isPending}>Cancelar</Button>
+              <Button onClick={() => importMutation.mutate()} disabled={importErrors.length > 0 || !importRows.length || importMutation.isPending}>
+                {importMutation.isPending ? "Importando..." : `Importar ${importRows.length} perguntas`}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {open && (
         <div className="bg-card border border-border rounded-2xl p-6 mb-4 space-y-3">
@@ -179,6 +267,37 @@ function QuestionsEditor({ assessmentId, items, onChange }: { assessmentId: stri
       </div>
     </section>
   );
+}
+
+type AssessmentImportRow = {
+  question: string;
+  options: Array<{ id: "a" | "b" | "c" | "d"; text: string }>;
+  correct_option_id: "a" | "b" | "c" | "d";
+};
+
+function normalizeHeader(value: string) {
+  return value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "_");
+}
+
+function parseSemicolonCsv(text: string) {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    if (char === '"') {
+      if (quoted && text[index + 1] === '"') { cell += '"'; index += 1; }
+      else quoted = !quoted;
+    } else if (char === ";" && !quoted) {
+      row.push(cell); cell = "";
+    } else if ((char === "\n" || char === "\r") && !quoted) {
+      if (char === "\r" && text[index + 1] === "\n") index += 1;
+      row.push(cell); rows.push(row); row = []; cell = "";
+    } else cell += char;
+  }
+  if (cell.length || row.length) { row.push(cell); rows.push(row); }
+  return rows;
 }
 
 function BandsEditor({ assessmentId, items, onChange }: { assessmentId: string; items: any[]; onChange: () => void }) {
