@@ -7,4 +7,4 @@
 - [x] Exibir pergunta e imagem juntas no treinamento.
 - [x] Validar cadastro, edição e visualização com e sem imagem.
 - [x] Importar perguntas de avaliação pelo modelo CSV em português.
-- [ ] Validar a importação das 20 questões de Redes em uma conta administrativa.
+- [x] Validar a importação das 20 questões de Redes na avaliação correspondente.
