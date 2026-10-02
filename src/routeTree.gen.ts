@@ -9,50 +9,30 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MinhaAreaRouteImport } from './routes/minha-area'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as FlashcardsRouteImport } from './routes/flashcards'
-import { Route as DownloadsRouteImport } from './routes/downloads'
-import { Route as BancoDeQuestoesRouteImport } from './routes/banco-de-questoes'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AvaliacaoIndexRouteImport } from './routes/avaliacao.index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BancoDeQuestoesRouteImport } from './routes/banco-de-questoes'
+import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as FlashcardsRouteImport } from './routes/flashcards'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as MinhaAreaRouteImport } from './routes/minha-area'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AvaliacaoSlugRouteImport } from './routes/avaliacao.$slug'
-import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
-import { Route as AdminQuestionsRouteImport } from './routes/admin.questions'
-import { Route as AdminProductsRouteImport } from './routes/admin.products'
-import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
-import { Route as AdminDownloadsRouteImport } from './routes/admin.downloads'
 import { Route as AdminAttemptsRouteImport } from './routes/admin.attempts'
-import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
+import { Route as AdminDownloadsRouteImport } from './routes/admin.downloads'
+import { Route as AdminFlashcardsRouteImport } from './routes/admin.flashcards'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminQuestionsRouteImport } from './routes/admin.questions'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
+import { Route as AvaliacaoIndexRouteImport } from './routes/avaliacao.index'
+import { Route as AvaliacaoSlugRouteImport } from './routes/avaliacao.$slug'
 import { Route as AdminAssessmentsIndexRouteImport } from './routes/admin.assessments.index'
-import { Route as AdminUsersIdRouteImport } from './routes/admin.users.$id'
 import { Route as AdminAssessmentsIdRouteImport } from './routes/admin.assessments.$id'
+import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
+import { Route as AdminUsersIdRouteImport } from './routes/admin.users.$id'
 
-const MinhaAreaRoute = MinhaAreaRouteImport.update({
-  id: '/minha-area',
-  path: '/minha-area',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FlashcardsRoute = FlashcardsRouteImport.update({
-  id: '/flashcards',
-  path: '/flashcards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DownloadsRoute = DownloadsRouteImport.update({
-  id: '/downloads',
-  path: '/downloads',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BancoDeQuestoesRoute = BancoDeQuestoesRouteImport.update({
-  id: '/banco-de-questoes',
-  path: '/banco-de-questoes',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -60,14 +40,29 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const BancoDeQuestoesRoute = BancoDeQuestoesRouteImport.update({
+  id: '/banco-de-questoes',
+  path: '/banco-de-questoes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AvaliacaoIndexRoute = AvaliacaoIndexRouteImport.update({
-  id: '/avaliacao/',
-  path: '/avaliacao/',
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlashcardsRoute = FlashcardsRouteImport.update({
+  id: '/flashcards',
+  path: '/flashcards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinhaAreaRoute = MinhaAreaRouteImport.update({
+  id: '/minha-area',
+  path: '/minha-area',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -75,29 +70,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AvaliacaoSlugRoute = AvaliacaoSlugRouteImport.update({
-  id: '/avaliacao/$slug',
-  path: '/avaliacao/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
-  id: '/testimonials',
-  path: '/testimonials',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminQuestionsRoute = AdminQuestionsRouteImport.update({
-  id: '/questions',
-  path: '/questions',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProductsRoute = AdminProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFlashcardsRoute = AdminFlashcardsRouteImport.update({
-  id: '/flashcards',
-  path: '/flashcards',
+const AdminAttemptsRoute = AdminAttemptsRouteImport.update({
+  id: '/attempts',
+  path: '/attempts',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminDownloadsRoute = AdminDownloadsRouteImport.update({
@@ -105,9 +80,44 @@ const AdminDownloadsRoute = AdminDownloadsRouteImport.update({
   path: '/downloads',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAttemptsRoute = AdminAttemptsRouteImport.update({
-  id: '/attempts',
-  path: '/attempts',
+const AdminFlashcardsRoute = AdminFlashcardsRouteImport.update({
+  id: '/flashcards',
+  path: '/flashcards',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminQuestionsRoute = AdminQuestionsRouteImport.update({
+  id: '/questions',
+  path: '/questions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AvaliacaoIndexRoute = AvaliacaoIndexRouteImport.update({
+  id: '/avaliacao/',
+  path: '/avaliacao/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvaliacaoSlugRoute = AvaliacaoSlugRouteImport.update({
+  id: '/avaliacao/$slug',
+  path: '/avaliacao/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAssessmentsIndexRoute = AdminAssessmentsIndexRouteImport.update({
+  id: '/assessments/',
+  path: '/assessments/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAssessmentsIdRoute = AdminAssessmentsIdRouteImport.update({
+  id: '/assessments/$id',
+  path: '/assessments/$id',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
@@ -115,19 +125,9 @@ const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
   path: '/users/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAssessmentsIndexRoute = AdminAssessmentsIndexRouteImport.update({
-  id: '/assessments/',
-  path: '/assessments/',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
   id: '/users/$id',
   path: '/users/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAssessmentsIdRoute = AdminAssessmentsIdRouteImport.update({
-  id: '/assessments/$id',
-  path: '/assessments/$id',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -279,39 +279,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/minha-area': {
-      id: '/minha-area'
-      path: '/minha-area'
-      fullPath: '/minha-area'
-      preLoaderRoute: typeof MinhaAreaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/flashcards': {
-      id: '/flashcards'
-      path: '/flashcards'
-      fullPath: '/flashcards'
-      preLoaderRoute: typeof FlashcardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/downloads': {
-      id: '/downloads'
-      path: '/downloads'
-      fullPath: '/downloads'
-      preLoaderRoute: typeof DownloadsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/banco-de-questoes': {
-      id: '/banco-de-questoes'
-      path: '/banco-de-questoes'
-      fullPath: '/banco-de-questoes'
-      preLoaderRoute: typeof BancoDeQuestoesRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -321,18 +293,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/banco-de-questoes': {
+      id: '/banco-de-questoes'
+      path: '/banco-de-questoes'
+      fullPath: '/banco-de-questoes'
+      preLoaderRoute: typeof BancoDeQuestoesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/avaliacao/': {
-      id: '/avaliacao/'
-      path: '/avaliacao'
-      fullPath: '/avaliacao/'
-      preLoaderRoute: typeof AvaliacaoIndexRouteImport
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flashcards': {
+      id: '/flashcards'
+      path: '/flashcards'
+      fullPath: '/flashcards'
+      preLoaderRoute: typeof FlashcardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/minha-area': {
+      id: '/minha-area'
+      path: '/minha-area'
+      fullPath: '/minha-area'
+      preLoaderRoute: typeof MinhaAreaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -342,39 +335,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/avaliacao/$slug': {
-      id: '/avaliacao/$slug'
-      path: '/avaliacao/$slug'
-      fullPath: '/avaliacao/$slug'
-      preLoaderRoute: typeof AvaliacaoSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/testimonials': {
-      id: '/admin/testimonials'
-      path: '/testimonials'
-      fullPath: '/admin/testimonials'
-      preLoaderRoute: typeof AdminTestimonialsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/questions': {
-      id: '/admin/questions'
-      path: '/questions'
-      fullPath: '/admin/questions'
-      preLoaderRoute: typeof AdminQuestionsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/products': {
-      id: '/admin/products'
-      path: '/products'
-      fullPath: '/admin/products'
-      preLoaderRoute: typeof AdminProductsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/flashcards': {
-      id: '/admin/flashcards'
-      path: '/flashcards'
-      fullPath: '/admin/flashcards'
-      preLoaderRoute: typeof AdminFlashcardsRouteImport
+    '/admin/attempts': {
+      id: '/admin/attempts'
+      path: '/attempts'
+      fullPath: '/admin/attempts'
+      preLoaderRoute: typeof AdminAttemptsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/downloads': {
@@ -384,11 +349,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDownloadsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/attempts': {
-      id: '/admin/attempts'
-      path: '/attempts'
-      fullPath: '/admin/attempts'
-      preLoaderRoute: typeof AdminAttemptsRouteImport
+    '/admin/flashcards': {
+      id: '/admin/flashcards'
+      path: '/flashcards'
+      fullPath: '/admin/flashcards'
+      preLoaderRoute: typeof AdminFlashcardsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/questions': {
+      id: '/admin/questions'
+      path: '/questions'
+      fullPath: '/admin/questions'
+      preLoaderRoute: typeof AdminQuestionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/avaliacao/': {
+      id: '/avaliacao/'
+      path: '/avaliacao'
+      fullPath: '/avaliacao/'
+      preLoaderRoute: typeof AvaliacaoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/avaliacao/$slug': {
+      id: '/avaliacao/$slug'
+      path: '/avaliacao/$slug'
+      fullPath: '/avaliacao/$slug'
+      preLoaderRoute: typeof AvaliacaoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/assessments/': {
+      id: '/admin/assessments/'
+      path: '/assessments'
+      fullPath: '/admin/assessments/'
+      preLoaderRoute: typeof AdminAssessmentsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/assessments/$id': {
+      id: '/admin/assessments/$id'
+      path: '/assessments/$id'
+      fullPath: '/admin/assessments/$id'
+      preLoaderRoute: typeof AdminAssessmentsIdRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/users/': {
@@ -398,25 +412,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/assessments/': {
-      id: '/admin/assessments/'
-      path: '/assessments'
-      fullPath: '/admin/assessments/'
-      preLoaderRoute: typeof AdminAssessmentsIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/users/$id': {
       id: '/admin/users/$id'
       path: '/users/$id'
       fullPath: '/admin/users/$id'
       preLoaderRoute: typeof AdminUsersIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/assessments/$id': {
-      id: '/admin/assessments/$id'
-      path: '/assessments/$id'
-      fullPath: '/admin/assessments/$id'
-      preLoaderRoute: typeof AdminAssessmentsIdRouteImport
       parentRoute: typeof AdminRoute
     }
   }
