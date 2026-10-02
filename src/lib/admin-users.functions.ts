@@ -1,7 +1,21 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
+
+function generateTemporaryPassword() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
+  const required = ["ABCDEFGHJKLMNPQRSTUVWXYZ", "abcdefghijkmnopqrstuvwxyz", "23456789", "!@#$%"];
+  const randomIndex = (length: number) => crypto.getRandomValues(new Uint32Array(1))[0] % length;
+  const characters = required.map((group) => group[randomIndex(group.length)]);
+
+  while (characters.length < 14) characters.push(alphabet[randomIndex(alphabet.length)]);
+  for (let index = characters.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomIndex(index + 1);
+    [characters[index], characters[swapIndex]] = [characters[swapIndex], characters[index]];
+  }
+
+  return characters.join("");
+}
 
 async function assertAdmin(supabase: any, userId: string) {
   const { data, error } = await supabase
@@ -18,6 +32,7 @@ export const listUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: authList, error: authErr } = await supabaseAdmin.auth.admin.listUsers({
       page: 1,
@@ -63,12 +78,16 @@ export const resetUserPassword = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: u } = await supabaseAdmin.auth.admin.getUserById(data.userId);
     const email = u.user?.email;
     if (!email) throw new Error("Usuário sem email");
-    const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email);
+    const temporaryPassword = generateTemporaryPassword();
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      password: temporaryPassword,
+    });
     if (error) throw new Error(error.message);
-    return { ok: true, email };
+    return { ok: true, email, temporaryPassword };
   });
 
 export const toggleUserBlock = createServerFn({ method: "POST" })
@@ -78,6 +97,7 @@ export const toggleUserBlock = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (data.userId === context.userId) throw new Error("Você não pode bloquear a si mesmo");
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
       ban_duration: data.block ? "876000h" : "none",
@@ -93,6 +113,7 @@ export const deleteUser = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (data.userId === context.userId) throw new Error("Você não pode excluir a si mesmo");
     await supabaseAdmin.from("profiles").delete().eq("id", data.userId);
     await supabaseAdmin.from("user_roles").delete().eq("user_id", data.userId);

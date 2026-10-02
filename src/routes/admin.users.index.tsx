@@ -3,7 +3,17 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { KeyRound, Lock, Unlock, Trash2, Search, ShieldCheck } from "lucide-react";
+import { Check, Copy, KeyRound, Lock, Unlock, Trash2, Search, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   listUsers,
   resetUserPassword,
@@ -12,6 +22,7 @@ import {
 } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/admin/users/")({
+  head: () => ({ meta: [{ title: "Usuários — Prof. Daniel Moura" }, { name: "description", content: "Gerenciamento de usuários e acessos." }, { property: "og:title", content: "Usuários — Prof. Daniel Moura" }, { property: "og:description", content: "Gerenciamento de usuários e acessos." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: UsersPage,
 });
 
@@ -22,6 +33,9 @@ function UsersPage() {
   const delFn = useServerFn(deleteUser);
   const qc = useQueryClient();
   const [q, setQ] = useState("");
+  const [passwordUser, setPasswordUser] = useState<{ id: string; email: string } | null>(null);
+  const [temporaryPassword, setTemporaryPassword] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const users = useQuery({
     queryKey: ["admin_users"],
@@ -30,9 +44,25 @@ function UsersPage() {
 
   const reset = useMutation({
     mutationFn: (userId: string) => resetFn({ data: { userId } }),
-    onSuccess: (r: any) => toast.success(`Email de reset enviado para ${r.email}`),
+    onSuccess: (result) => {
+      setTemporaryPassword(result.temporaryPassword);
+      toast.success("Senha redefinida com sucesso");
+    },
     onError: (e: any) => toast.error(e.message),
   });
+
+  const closePasswordDialog = (open: boolean) => {
+    if (open || reset.isPending) return;
+    setPasswordUser(null);
+    setTemporaryPassword("");
+    setCopied(false);
+  };
+
+  const copyPassword = async () => {
+    await navigator.clipboard.writeText(temporaryPassword);
+    setCopied(true);
+    toast.success("Senha copiada");
+  };
 
   const block = useMutation({
     mutationFn: (v: { userId: string; block: boolean }) => blockFn({ data: v }),
@@ -126,8 +156,13 @@ function UsersPage() {
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-1">
                       <button
-                        title="Enviar reset de senha"
-                        onClick={() => reset.mutate(u.id)}
+                        title="Gerar nova senha"
+                        aria-label={`Gerar nova senha para ${u.email}`}
+                        onClick={() => {
+                          setPasswordUser({ id: u.id, email: u.email });
+                          setTemporaryPassword("");
+                          setCopied(false);
+                        }}
                         disabled={reset.isPending}
                         className="p-2 hover:bg-muted rounded"
                       >
@@ -158,6 +193,39 @@ function UsersPage() {
           </table>
         )}
       </div>
+
+      <Dialog open={Boolean(passwordUser)} onOpenChange={closePasswordDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{temporaryPassword ? "Nova senha gerada" : "Redefinir senha"}</DialogTitle>
+            <DialogDescription>
+              {temporaryPassword
+                ? `Copie e envie esta senha temporária para ${passwordUser?.email}. Ela será exibida somente agora.`
+                : `Uma senha aleatória segura substituirá imediatamente a senha atual de ${passwordUser?.email}.`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {temporaryPassword ? (
+            <div className="flex gap-2">
+              <Input value={temporaryPassword} readOnly aria-label="Senha temporária gerada" className="font-mono" />
+              <Button type="button" size="icon" variant="outline" onClick={copyPassword} aria-label="Copiar senha">
+                {copied ? <Check /> : <Copy />}
+              </Button>
+            </div>
+          ) : null}
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => closePasswordDialog(false)} disabled={reset.isPending}>
+              {temporaryPassword ? "Fechar" : "Cancelar"}
+            </Button>
+            {!temporaryPassword && passwordUser ? (
+              <Button type="button" onClick={() => reset.mutate(passwordUser.id)} disabled={reset.isPending}>
+                <KeyRound /> {reset.isPending ? "Gerando..." : "Gerar e redefinir"}
+              </Button>
+            ) : null}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
